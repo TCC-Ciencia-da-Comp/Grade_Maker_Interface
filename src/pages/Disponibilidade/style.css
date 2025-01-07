@@ -1,0 +1,69 @@
+.form-container {
+    display: flex;
+    gap: 20px;
+    /* Espaçamento entre os inputs */
+    justify-content: flex-start;
+    /* Alinha os inputs à esquerda */
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    /* Coloca o label em cima do input */
+}
+
+label {
+    margin-bottom: 5px;
+    /* Espaçamento entre o label e o input */
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+}
+table{
+    width: 100%;
+    border-collapse: collapse;
+
+}
+th {
+    background-color: #4CAF50; /* Cor de fundo do cabeçalho */
+    color: white; /* Cor do texto do cabeçalho */
+    font-weight: bold;
+    padding: 12px; /* Espaçamento maior no cabeçalho */
+  }
+
+
+
+
+input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 200px;
+    /* Defina a largura dos inputs */
+}
+
+.geralTableTitle {
+    margin-top: 8%;
+    padding-left: 10px;
+    border: 2px solid black;
+}
+
+.geralTableContainer {
+    display: block;
+    align-items: center;
+}
+
+.MatrizDisponibilidade{
+    border: 2px solid black;
+}
+
+.MatrizDisponibilidade td {
+    text-align: center; /* Alinhamento horizontal */
+    vertical-align: middle; /* Alinhamento vertical */
+    height: 100%; /* Garante que a altura total da célula seja usada */
+  }
+
+
+.MatrizDisponibilidade th {
+    text-align: center; /* Centraliza o texto do cabeçalho */
+  }

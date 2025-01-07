@@ -1,0 +1,48 @@
+/* Estilo para o container principal da página */
+.page-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 20px;
+    background-color: var(--bg-color);
+}
+
+/* Wrapper para o conteúdo principal */
+.content-wrapper {
+    width: 100%;
+    max-width: 1200px; /* Largura máxima aumentada para 1200px */
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Altura total */
+    overflow: hidden; /* Evita rolagem */
+}
+
+/* Container para botões, geralmente no topo */
+.button-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 0.5rem; /* Espaçamento reduzido */
+}
+
+/* Estilo para o botão de adicionar */
+.add-button {
+    padding: 8px 16px; /* Tamanho reduzido */
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* Efeito hover para o botão de adicionar */
+.add-button:hover {
+    background-color: #45a049;
+}
+
+/* Container para tabelas, permite rolagem */
+.table-container {
+    flex-grow: 1;
+    overflow: auto;
+}

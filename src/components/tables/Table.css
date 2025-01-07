@@ -1,0 +1,120 @@
+/* Define variáveis de cor globais para a tabela de professores */
+:root {
+    --header-bg-color: #805ad5;      /* Cor de fundo do cabeçalho da tabela */
+    --header-text-color: #ffffff;    /* Cor do texto do cabeçalho da tabela */
+    --row-bg-color: #fff5f7;         /* Cor de fundo das linhas da tabela */
+    --alternate-row-bg-color: #ffffff; /* Cor de fundo alternada para linhas da tabela */
+    --table-border-color: #e2e8f0;   /* Cor da borda da tabela */
+    --error-color: #e53e3e;          /* Cor para mensagens de erro */
+    --text-color: #1a202c;           /* Cor padrão do texto */
+    --modal-bg-color: #2D3748;       /* Cor de fundo do modal */
+    --modal-text-color: #E2E8F0;     /* Cor do texto do modal */
+    --bg-color: #f7fafc;             /* Cor de fundo geral */
+    --text-color: #1a202c;           /* Cor padrão do texto */
+}
+
+/* Estilo para o container principal da página */
+.page-container {
+    background-color: var(--bg-color);
+    min-height: 100vh;
+    height: auto; /* Alterado de 100vh para auto */
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; /* Alterado de hidden para auto */
+}
+
+/* Estilo para o wrapper do conteúdo principal */
+.content-wrapper {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; /* Alterado de hidden para auto */
+}
+
+/* Estilo para mensagens de erro */
+.error-message {
+    color: var(--error-color);
+    margin-bottom: 1rem;
+}
+
+/* Estilo para o container da tabela */
+.table-container {
+    margin-top: 0.5rem;
+    border: 1px solid var(--table-border-color);
+    border-radius: 0.375rem;
+    overflow: auto;
+    background-color: var(--row-bg-color);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Estilo para a tabela */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--bg-color);
+    flex: 1;
+    table-layout: fixed;
+    color: var(--text-color);
+}
+
+/* Estilo para o cabeçalho da tabela */
+.table-header {
+    background-color: var(--header-bg-color);
+    color: var(--header-text-color);
+    font-weight: bold;
+    font-size: 1rem;
+    padding: 1rem;
+    text-align: left;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+/* Estilos para linhas pares e ímpares da tabela */
+.table-row-even {
+    background-color: var(--row-bg-color);
+}
+
+.table-row-odd {
+    background-color: var(--alternate-row-bg-color);
+}
+
+/* Estilo para células da tabela */
+.table-cell {
+    padding: 0.75rem 1rem;
+    color: var(--text-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Estilos para o modal de confirmação */
+.chakra-modal__content {
+    background-color: var(--modal-bg-color) !important;
+    color: var(--modal-text-color) !important;
+}
+
+.chakra-modal__header {
+    font-size: 1.25rem !important;
+    font-weight: bold !important;
+}
+
+.chakra-modal__body {
+    font-size: 1rem !important;
+}
+
+.chakra-modal__footer {
+    justify-content: flex-end !important;
+}
+
+/* Estilos para botões do Chakra UI */
+.chakra-button {
+    transition: all 0.2s !important;
+}
+
+.chakra-button:hover {
+    opacity: 0.8 !important;
+}

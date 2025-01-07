@@ -1,0 +1,13 @@
+.custom-tabmenu .p-tabmenu-nav .p-tabmenuitem a {
+    color: #cbd5e1 !important; /* Cor do texto dos itens do menu */
+}
+
+.navbar-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.custom-tabmenu .p-tabmenu-nav {
+    justify-content: center; /* Centralização dos itens no menu de abas */
+}

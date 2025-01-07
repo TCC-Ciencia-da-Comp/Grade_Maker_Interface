@@ -1,0 +1,71 @@
+/* Variáveis de cor para o formulário do professor */
+:root {
+  --background-color: #1A202C;
+  --text-color: #E2E8F0;
+  --modal-bg-color: #1A202C;
+  --modal-text-color: #E2E8F0;
+  --input-bg-color: #1A202C;
+  --input-border-color: #E2E8F0;
+  --button-primary-bg: #E2E8F0;
+  --button-primary-hover-bg: #cbd5e1;
+  --button-secondary-border: #E2E8F0;
+  --button-secondary-text: #E2E8F0;
+}
+
+/* Estilos para o modal do formulário */
+.form-prof-modal .chakra-modal__content {
+  background-color: var(--modal-bg-color);
+  color: var(--modal-text-color);
+}
+
+/* Estilos para os inputs do formulário */
+.form-prof-input {
+  background-color: var(--input-bg-color);
+  border-color: var(--input-border-color);
+  color: var(--modal-text-color);
+}
+
+/* Efeitos hover e focus para inputs */
+.form-prof-input:hover,
+.form-prof-input:focus {
+  border-color: var(--input-focus-color);
+}
+
+.form-prof-input:focus {
+  box-shadow: 0 0 0 1px var(--input-focus-color);
+}
+
+/* Estilos para botões do formulário */
+.form-prof-button {
+  transition: all 0.2s;
+}
+
+/* Estilos para botão primário */
+.form-prof-button.primary {
+  background-color: var(--button-primary-bg);
+  color: var(--modal-text-color);
+}
+
+/* Efeito hover para botão primário */
+.form-prof-button.primary:hover {
+  background-color: var(--button-primary-hover-bg);
+}
+
+/* Estilos para botão secundário */
+.form-prof-button.secondary {
+  background-color: transparent;
+  border: 1px solid var(--button-secondary-border);
+  color: var(--button-secondary-text);
+}
+
+/* Efeito hover para botão secundário */
+.form-prof-button.secondary:hover {
+  background-color: var(--button-secondary-border);
+  color: var(--modal-text-color);
+}
+
+/* Efeito hover para botão de deletar */
+.delete-button:hover {
+  background-color: var(--delete-button-hover-bg);
+  color: var(--modal-text-color);
+}
