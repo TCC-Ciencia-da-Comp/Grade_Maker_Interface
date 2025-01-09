@@ -21,7 +21,7 @@ export default function Disponibilidade() {
   const [disponibilidade, setDisponibilidade] = useState([]);
 
   const professor = {
-    id: 39,
+    id: 1,
     nome:"Eliel Silva da Cruz"
   }
 

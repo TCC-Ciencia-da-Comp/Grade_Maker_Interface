@@ -3,12 +3,13 @@ import {
   Button,
   Flex,
   Grid,
-  Heading,
   Input,
   Text,
   Image,
   Select,
   useToast,
+  List,
+  ListItem,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import React from "react";
@@ -29,29 +30,33 @@ const FormDisponibilidade = ({
   onDisponibilidadeChange,
   days = [],
   turnos = [],
-  professor = {}
+  professor = { id: null, nome: "" },
 }) => {
   const toast = useToast();
   const [disponibilidade, setDisponibilidade] = useState([]);
+  const [disponiveis, setDisponiveis] = useState([
+    "Estrutura de Dados",
+    "Matemática",
+    "Teoria Grafos",
+    "Eng. Requisitos",
+  ]);
+  const [selecionadas, setSelecionadas] = useState(["Matemática", "Teoria Grafos"]);
+  const [anoInput, setAnoInput] = useState(ano);
+  const [semestreInput, setSemestreInput] = useState("");
 
-  useEffect(() => { 
+  useEffect(() => {
     const fetchDisponibilidade = async () => {
       try {
-        const resultado = await getDispProf(39);
-        resultado.map((res)=>{
-          console.log(res.diaSemanaId)
-        })
-        
-
+        const resultado = await getDispProf(professor.id || 0);
+        resultado.forEach((res) => {
+          console.log(res.diaSemanaId);
+        });
       } catch (error) {
         console.log("Erro inesperado: " + error);
       }
     };
     fetchDisponibilidade();
-  }, []);
-  
-
-
+  }, [professor.id]);
 
   const handleToggle = (dayId, periodId) => {
     setDisponibilidade((prevDisponibilidade) => ({
@@ -65,34 +70,28 @@ const FormDisponibilidade = ({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Obter os dias e turnos selecionados
+
     const selecionados = Object.keys(disponibilidade).flatMap((dayId) => {
       const turnosSelecionados = Object.keys(disponibilidade[dayId])
         .filter((periodId) => disponibilidade[dayId][periodId])
         .map((periodId) => ({ dayId, periodId }));
       return turnosSelecionados;
     });
-  
+
     try {
-      // Deleta a disponibilidade antes de inserir as novas
       await deleteteByIdProf(professor.id);
-  
-      // Insere as novas disponibilidades
-      selecionados.map((disp) => {
+
+      selecionados.forEach((disp) => {
         const objectDisponibilidade = {
           professorId: professor.id,
           diaSemanaId: disp.dayId,
           turnoId: disp.periodId,
-          ano: e.target.elements.anoInput.value,
-          semestre: e.target.elements.semestreInput.value,
+          ano: anoInput,
+          semestre: semestreInput,
         };
-        
-        // Chame a função de inserção para cada item
         insertDisponibilidade(objectDisponibilidade);
       });
-  
-      // Toast de sucesso
+
       toast({
         title: "Disponibilidade agendada",
         description: "Disponibilidades atualizadas com sucesso.",
@@ -102,7 +101,6 @@ const FormDisponibilidade = ({
         position: "top-right",
       });
     } catch (error) {
-      // Toast de erro
       toast({
         title: "Erro ao marcar ",
         description: "Algo deu errado.",
@@ -112,6 +110,21 @@ const FormDisponibilidade = ({
         position: "top-right",
       });
     }
+  };
+
+  const moverParaSelecionadas = (item) => {
+    setDisponiveis(disponiveis.filter((disciplina) => disciplina !== item));
+    setSelecionadas([...selecionadas, item]);
+  };
+
+  const moverParaDisponiveis = (item) => {
+    setSelecionadas(selecionadas.filter((disciplina) => disciplina !== item));
+    setDisponiveis([...disponiveis, item]);
+  };
+
+  const handleCancelar = () => {
+    setDisponiveis(["Estrutura de Dados", "Matemática", "Teoria Grafos", "Eng. Requisitos"]);
+    setSelecionadas([]);
   };
 
   return (
@@ -130,7 +143,7 @@ const FormDisponibilidade = ({
                   readOnly
                   _focus={{
                     borderColor: "purple",
-                    boxShadow: "0 0 0 1px #805AD5", // Sombra roxa ao redor do input
+                    boxShadow: "0 0 0 1px #805AD5",
                   }}
                 />
               </Box>
@@ -140,14 +153,13 @@ const FormDisponibilidade = ({
                   placeholder="Semestre"
                   id="semestreInput"
                   isRequired
+                  value={semestreInput}
+                  onChange={(e) => setSemestreInput(e.target.value)}
                   _focus={{
                     borderColor: "purple",
-                    boxShadow: "0 0 0 1px #805AD5", // Sombra roxa ao redor do input
+                    boxShadow: "0 0 0 1px #805AD5",
                   }}
                 >
-                  <option disabled hidden value="">
-                    Semestre
-                  </option>
                   <option value={1}>Primeiro</option>
                   <option value={2}>Segundo</option>
                 </Select>
@@ -155,14 +167,15 @@ const FormDisponibilidade = ({
               <Box>
                 <Text mb={2}>Ano</Text>
                 <Input
-                  _focus={{
-                    borderColor: "purple",
-                    boxShadow: "0 0 0 1px #805AD5", // Sombra roxa ao redor do input
-                  }}
                   placeholder="Ano"
                   width="100px"
-                  defaultValue={ano}
+                  value={anoInput}
+                  onChange={(e) => setAnoInput(e.target.value)}
                   id="anoInput"
+                  _focus={{
+                    borderColor: "purple",
+                    boxShadow: "0 0 0 1px #805AD5",
+                  }}
                 />
               </Box>
             </Flex>
@@ -171,13 +184,13 @@ const FormDisponibilidade = ({
             <Grid templateColumns={`repeat(${days.length + 1}, 1fr)`} gap={2}>
               <Box></Box>
               {days.map((day) => (
-                <Text key={day.nome} textAlign="center" fontSize="sm">
-                  {day.nome}
+                <Text key={day.descricao} textAlign="center" fontSize="sm">
+                  {day.descricao.slice(0, 3)}
                 </Text>
               ))}
               {turnos.map((period) => (
                 <React.Fragment key={period.id}>
-                  <Text>{period.nome}</Text>
+                  <Text>{period.descricao}</Text>
                   {days.map((day) => (
                     <Button
                       key={`${day.id}-${period.id}`}
@@ -202,26 +215,63 @@ const FormDisponibilidade = ({
             />
           </Box>
         </Grid>
-        <Flex justify={"flex-end"} mt={4} pr={320}>
-          <Box mr={"right"} width={"100px"}>
-            <Button
-              type="submit"
-              width={"100%"}
-              color={"white"}
-              colorScheme="purple"
-              _focus={{
-                boxShadow:
-                  "0 0 1px 2px rgba(173, 216, 230, .75), 0 1px 1px rgba(0, 0, 0, .15)",
-              }}
-              _hover={{
-                backgroundColor: "purple", // Cor de fundo ao passar o mouse
-                color: "white", // Cor do texto ao passar o mouse
-                transform: "scale(1.1)", // Aumenta levemente o botão ao passar o mouse
-              }}
-            >
-              Enviar
-            </Button>
-          </Box>
+
+        {/* Gerenciamento de disciplinas */}
+        <Box mt={8}>
+          <Text fontSize="lg" fontWeight="bold" mb={4}>
+            Disciplinas
+          </Text>
+          <Flex align="center" justify="center" gap={4}>
+            <Box border="1px solid black" p={3} borderRadius="5px" width="200px" height="250px" overflow="auto">
+              <Text fontWeight="bold" mb={2}>
+                Disponíveis
+              </Text>
+              <List>
+                {disponiveis.map((disciplina, index) => (
+                  <ListItem key={index}>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      width="100%"
+                      onClick={() => moverParaSelecionadas(disciplina)}
+                    >
+                      {disciplina}
+                    </Button>
+                  </ListItem>
+                ))}
+              </List>
+            </Box>
+
+            <Flex direction="column" justify="center" align="center" gap={2}>
+              <Button onClick={() => disponiveis.length > 0 && moverParaSelecionadas(disponiveis[0])}>→</Button>
+              <Button onClick={() => selecionadas.length > 0 && moverParaDisponiveis(selecionadas[0])}>←</Button>
+            </Flex>
+
+            <Box border="1px solid black" p={3} borderRadius="5px" width="200px" height="250px" overflow="auto">
+              <Text fontWeight="bold" mb={2}>
+                Selecionadas
+              </Text>
+              <List>
+                {selecionadas.map((disciplina, index) => (
+                  <ListItem key={index}>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      width="100%"
+                      onClick={() => moverParaDisponiveis(disciplina)}
+                    >
+                      {disciplina}
+                    </Button>
+                  </ListItem>
+                ))}
+              </List>
+            </Box>
+          </Flex>
+        </Box>
+
+        <Flex justify="center" mt={4} gap={4}>
+          <Button colorScheme="blue" type="submit">Confirmar</Button>
+          <Button colorScheme="red" onClick={handleCancelar}>Cancelar</Button>
         </Flex>
       </Box>
     </form>
