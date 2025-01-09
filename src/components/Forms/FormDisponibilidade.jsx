@@ -30,19 +30,16 @@ const FormDisponibilidade = ({
   onDisponibilidadeChange,
   days = [],
   turnos = [],
+  cursos = [],
   professor = { id: null, nome: "" },
 }) => {
   const toast = useToast();
   const [disponibilidade, setDisponibilidade] = useState([]);
-  const [disponiveis, setDisponiveis] = useState([
-    "Estrutura de Dados",
-    "Matemática",
-    "Teoria Grafos",
-    "Eng. Requisitos",
-  ]);
-  const [selecionadas, setSelecionadas] = useState(["Matemática", "Teoria Grafos"]);
+  const [disponiveis, setDisponiveis] = useState([]); // Disciplinas disponíveis
+  const [selecionadas, setSelecionadas] = useState([]); // Disciplinas selecionadas
   const [anoInput, setAnoInput] = useState(ano);
   const [semestreInput, setSemestreInput] = useState("");
+  const [selectedCurso, setSelectedCurso] = useState(""); // Adiciona estado para o curso selecionado
 
   useEffect(() => {
     const fetchDisponibilidade = async () => {
@@ -113,19 +110,32 @@ const FormDisponibilidade = ({
   };
 
   const moverParaSelecionadas = (item) => {
-    setDisponiveis(disponiveis.filter((disciplina) => disciplina !== item));
+    setDisponiveis(
+      disponiveis.filter((disciplina) => disciplina.id !== item.id)
+    );
     setSelecionadas([...selecionadas, item]);
   };
 
   const moverParaDisponiveis = (item) => {
-    setSelecionadas(selecionadas.filter((disciplina) => disciplina !== item));
+    setSelecionadas(
+      selecionadas.filter((disciplina) => disciplina.id !== item.id)
+    );
     setDisponiveis([...disponiveis, item]);
   };
 
   const handleCancelar = () => {
-    setDisponiveis(["Estrutura de Dados", "Matemática", "Teoria Grafos", "Eng. Requisitos"]);
+    setDisponiveis([]);
     setSelecionadas([]);
+    setSelectedCurso(null);
   };
+  useEffect(() => {
+    if (selectedCurso) {
+      const curso = cursos.find((c) => c.id === parseInt(selectedCurso));
+      setDisponiveis(curso?.disciplinas || []); // Atualiza com disciplinas do curso selecionado
+    } else {
+      setDisponiveis([]); // Reseta se nenhum curso for selecionado
+    }
+  }, [selectedCurso, cursos]);
 
   return (
     <form onSubmit={handleSubmit}>
@@ -218,61 +228,114 @@ const FormDisponibilidade = ({
 
         {/* Gerenciamento de disciplinas */}
         <Box mt={8}>
-          <Text fontSize="lg" fontWeight="bold" mb={4}>
-            Disciplinas
-          </Text>
+          <Box display="flex" alignItems="center" mb={4}>
+            <Text mr={4}>Cursos</Text>
+            <Select
+              placeholder="Selecione o Curso"
+              width="400px"
+              value={selectedCurso || ""}
+              onChange={(e) => setSelectedCurso(e.target.value)}
+              _focus={{
+                borderColor: "purple",
+                boxShadow: "0 0 0 1px #805AD5",
+              }}
+            >
+              {cursos.map((curso) => (
+                <option key={curso.id} value={curso.id}>
+                  {curso.nome}
+                </option>
+              ))}
+            </Select>
+          </Box>
+
           <Flex align="center" justify="center" gap={4}>
-            <Box border="1px solid black" p={3} borderRadius="5px" width="200px" height="250px" overflow="auto">
+            {/* Disciplinas disponíveis */}
+            <Box
+              border="1px solid black"
+              p={3}
+              borderRadius="5px"
+              width="200px"
+              height="250px"
+              overflow="auto"
+            >
               <Text fontWeight="bold" mb={2}>
                 Disponíveis
               </Text>
               <List>
-                {disponiveis.map((disciplina, index) => (
-                  <ListItem key={index}>
+                {disponiveis.map((disciplina) => (
+                  <ListItem key={disciplina.id}>
                     <Button
                       size="sm"
                       variant="outline"
                       width="100%"
                       onClick={() => moverParaSelecionadas(disciplina)}
                     >
-                      {disciplina}
+                      {disciplina.nome}
                     </Button>
                   </ListItem>
                 ))}
               </List>
             </Box>
 
+            {/* Botões para mover disciplinas */}
             <Flex direction="column" justify="center" align="center" gap={2}>
-              <Button onClick={() => disponiveis.length > 0 && moverParaSelecionadas(disponiveis[0])}>→</Button>
-              <Button onClick={() => selecionadas.length > 0 && moverParaDisponiveis(selecionadas[0])}>←</Button>
+              <Button
+                onClick={() =>
+                  disponiveis.length > 0 &&
+                  moverParaSelecionadas(disponiveis[0])
+                }
+              >
+                →
+              </Button>
+              <Button
+                onClick={() =>
+                  selecionadas.length > 0 &&
+                  moverParaDisponiveis(selecionadas[0])
+                }
+              >
+                ←
+              </Button>
             </Flex>
 
-            <Box border="1px solid black" p={3} borderRadius="5px" width="200px" height="250px" overflow="auto">
+            {/* Disciplinas selecionadas */}
+            <Box
+              border="1px solid black"
+              p={3}
+              borderRadius="5px"
+              width="200px"
+              height="250px"
+              overflow="auto"
+            >
               <Text fontWeight="bold" mb={2}>
                 Selecionadas
               </Text>
               <List>
-                {selecionadas.map((disciplina, index) => (
-                  <ListItem key={index}>
+                {selecionadas.map((disciplina) => (
+                  <ListItem key={disciplina.id}>
                     <Button
                       size="sm"
                       variant="outline"
                       width="100%"
                       onClick={() => moverParaDisponiveis(disciplina)}
                     >
-                      {disciplina}
+                      {disciplina.nome}
                     </Button>
                   </ListItem>
                 ))}
               </List>
             </Box>
           </Flex>
-        </Box>
 
-        <Flex justify="center" mt={4} gap={4}>
-          <Button colorScheme="blue" type="submit">Confirmar</Button>
-          <Button colorScheme="red" onClick={handleCancelar}>Cancelar</Button>
-        </Flex>
+          {/* Botões para confirmação ou cancelamento */}
+          <Flex justify="center" mt={4} gap={4}>
+            <Button colorScheme="blue" type="submit">
+              Confirmar
+            </Button>
+            <Button colorScheme="red" onClick={handleCancelar}>
+              Cancelar
+            </Button>
+          </Flex>
+        </Box>
       </Box>
     </form>
   );

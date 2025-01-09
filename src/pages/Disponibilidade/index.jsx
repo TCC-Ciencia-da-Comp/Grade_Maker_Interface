@@ -12,13 +12,14 @@ import { useEffect, useState } from "react";
 import React from "react";
 import imagemPrincipal from "../../assets/ImagemFigma.png";
 import FormDisponibilidade from "../../components/Forms/FormDisponibilidade";
-import { getDias, getDispProf, getTurnos } from "./service";
+import { getCursos, getDias, getDispProf, getTurnos } from "./service";
 
 export default function Disponibilidade() {
   const [dias, setDias] = useState([]);
   const [turnos, setTurnos] = useState([]);
   const [anoAtual, setAnoAtual] = useState(new Date().getFullYear());
   const [disponibilidade, setDisponibilidade] = useState([]);
+  const [cursos, setCursos] = useState([])
 
   const professor = {
     id: 1,
@@ -37,6 +38,20 @@ export default function Disponibilidade() {
     };
     fetchDias();
   }, []);
+
+
+  useEffect(() => {
+    const fetchCursos = async () => {
+      try {
+        const resultado = await getCursos();
+        console.log(resultado.data)
+        setCursos(resultado.data)
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchCursos();
+  },[]);
 
   useEffect(() => {
     const fetchTurnos = async () => {
@@ -92,9 +107,10 @@ export default function Disponibilidade() {
           Disponibilidade do professor
         </Heading>
         <FormDisponibilidade
-          nomeProfessor="João da Silva"
+          nomeProfessor=""
           semestre="5"
           ano={anoAtual}
+          cursos={cursos}
           disponibilidade={disponibilidade}
           onChange={(field, value) => handleFormChange(field, value)}
           onDisponibilidadeChange={(newDisponibilidade) =>

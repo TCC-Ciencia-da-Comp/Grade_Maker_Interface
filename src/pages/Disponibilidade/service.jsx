@@ -107,3 +107,21 @@ export const deleteteByIdProf = async (id) => {
 
   return await fetchDias(id);
 };
+
+export const getCursos = async ()=>{
+  try {
+    const resposta = await fetch("http://localhost:8080/api/curso");
+    if (!resposta.ok) {
+      throw new Error(`HTTP error! status: ${resposta.status}`);
+    }
+    const dadosJson = await resposta.json();
+    if (dadosJson) {
+      return dadosJson;
+    } else {
+      throw new Error("Nada retornado");
+    }
+  } catch (erro) {
+    console.error("Erro ao buscar os Turnos", erro);
+    setErro(erro.message);
+  }
+}
