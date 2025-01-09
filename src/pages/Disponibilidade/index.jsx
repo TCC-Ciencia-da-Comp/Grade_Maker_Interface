@@ -13,6 +13,8 @@ import React from "react";
 import imagemPrincipal from "../../assets/ImagemFigma.png";
 import FormDisponibilidade from "../../components/Forms/FormDisponibilidade";
 import { getCursos, getDias, getDispProf, getTurnos } from "./service";
+import FormDisponibilidade2 from "../../components/Forms/FormDisponibilidade2";
+import { getProfessor } from "../Professor/service";
 
 export default function Disponibilidade() {
   const [dias, setDias] = useState([]);
@@ -20,7 +22,7 @@ export default function Disponibilidade() {
   const [anoAtual, setAnoAtual] = useState(new Date().getFullYear());
   const [disponibilidade, setDisponibilidade] = useState([]);
   const [cursos, setCursos] = useState([])
-
+  const [professores, setProfessores] = useState([])
   const professor = {
     id: 1,
     nome:"Eliel Silva da Cruz"
@@ -39,12 +41,23 @@ export default function Disponibilidade() {
     fetchDias();
   }, []);
 
+  useEffect(()=> {
+    const fetchProfessores = async ()=>{
+      try {
+        const resultado = await getProfessor();
+        setProfessores(resultado);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchProfessores();
+  },[])
 
   useEffect(() => {
     const fetchCursos = async () => {
       try {
         const resultado = await getCursos();
-        console.log(resultado.data)
+        //console.log(resultado.data)
         setCursos(resultado.data)
       } catch (error) {
         console.log(error);
@@ -106,7 +119,7 @@ export default function Disponibilidade() {
         >
           Disponibilidade do professor
         </Heading>
-        <FormDisponibilidade
+        <FormDisponibilidade2
           nomeProfessor=""
           semestre="5"
           ano={anoAtual}
@@ -119,6 +132,7 @@ export default function Disponibilidade() {
           days={dias}
           turnos={turnos}
           professor={professor}
+          professores={professores}
         />
       </div>
     </div>

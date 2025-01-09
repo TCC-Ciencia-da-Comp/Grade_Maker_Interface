@@ -4,7 +4,6 @@ import Professor from ".";
 export const getProfessor = async () => {
   try {
     const resposta = await fetch("http://localhost:8080/api/professor");
-   
     if (!resposta.ok) {
       throw new Error(`HTTP error! status: ${resposta.status}`);
     }
@@ -125,3 +124,4 @@ export const deleteProfessor = async (id) =>{
       }
 
 }
+

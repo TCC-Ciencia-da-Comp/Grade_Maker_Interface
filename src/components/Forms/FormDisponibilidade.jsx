@@ -20,64 +20,71 @@ import {
   insertDisponibilidade,
 } from "../../pages/Disponibilidade/service";
 
-// Componente principal para o formulário de professor
+
 const FormDisponibilidade = ({
-  nomeProfessor = "",
-  semestre = "",
+
   ano = "",
   PrevDisponibilidade = [],
-  onChange,
-  onDisponibilidadeChange,
-  days = [],
-  turnos = [],
-  cursos = [],
-  professor = { id: null, nome: "" },
+  days = [], // Dias disponíveis (ex.: segunda, terça)
+  turnos = [], // Turnos disponíveis (ex.: manhã, tarde)
+  cursos = [], // Lista de cursos
+  professor = { id: null, nome: "" }, // Informações do professor
+  professores = []
 }) => {
   const toast = useToast();
-  const [disponibilidade, setDisponibilidade] = useState([]);
-  const [disponiveis, setDisponiveis] = useState([]); // Disciplinas disponíveis
-  const [selecionadas, setSelecionadas] = useState([]); // Disciplinas selecionadas
-  const [anoInput, setAnoInput] = useState(ano);
-  const [semestreInput, setSemestreInput] = useState("");
-  const [selectedCurso, setSelectedCurso] = useState(""); // Adiciona estado para o curso selecionado
 
+  // Estados do componente
+  const [disponibilidade, setDisponibilidade] = useState([]); // Disponibilidades selecionadas
+  const [disponiveis, setDisponiveis] = useState([]); // Disciplinas disponíveis para seleção
+  const [selecionadas, setSelecionadas] = useState([]); // Disciplinas já selecionadas
+  const [anoInput, setAnoInput] = useState(ano); // Ano selecionado
+  const [semestreInput, setSemestreInput] = useState(""); // Semestre selecionado
+  const [selectedCurso, setSelectedCurso] = useState(""); // Curso selecionado
+
+  // Efeito para buscar disponibilidades do professor ao carregar o componente
   useEffect(() => {
     const fetchDisponibilidade = async () => {
       try {
-        const resultado = await getDispProf(professor.id || 0);
+        const resultado = await getDispProf(professor.id || 0); // Busca disponibilidades do professor
         resultado.forEach((res) => {
-          console.log(res.diaSemanaId);
+          console.log(res.diaSemanaId); // Apenas loga os IDs retornados (pode ser ajustado)
         });
       } catch (error) {
-        console.log("Erro inesperado: " + error);
+        console.log("Erro inesperado: " + error); // Log de erros
       }
     };
     fetchDisponibilidade();
   }, [professor.id]);
 
+  // Alterna a seleção de disponibilidade para um dia/turno
   const handleToggle = (dayId, periodId) => {
     setDisponibilidade((prevDisponibilidade) => ({
       ...prevDisponibilidade,
       [dayId]: {
         ...prevDisponibilidade[dayId],
-        [periodId]: !prevDisponibilidade[dayId]?.[periodId],
+        [periodId]: !prevDisponibilidade[dayId]?.[periodId], // Inverte o estado atual
       },
     }));
   };
 
+  // Submissão do formulário para salvar as disponibilidades
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const selecionados = Object.keys(disponibilidade).flatMap((dayId) => {
-      const turnosSelecionados = Object.keys(disponibilidade[dayId])
+    // Filtra os dias e turnos selecionados
+    const selecionados = Object.keys(disponibilidade).flatMap((dayId) =>
+      Object.keys(disponibilidade[dayId])
         .filter((periodId) => disponibilidade[dayId][periodId])
-        .map((periodId) => ({ dayId, periodId }));
-      return turnosSelecionados;
-    });
+        .map((periodId) => ({
+          dayId,
+          periodId,
+        }))
+    );
 
     try {
-      await deleteteByIdProf(professor.id);
+      await deleteteByIdProf(professor.id); // Remove disponibilidades anteriores do professor
 
+      // Adiciona novas disponibilidades
       selecionados.forEach((disp) => {
         const objectDisponibilidade = {
           professorId: professor.id,
@@ -86,9 +93,10 @@ const FormDisponibilidade = ({
           ano: anoInput,
           semestre: semestreInput,
         };
-        insertDisponibilidade(objectDisponibilidade);
+        insertDisponibilidade(objectDisponibilidade); // Envia ao backend
       });
 
+      // Mensagem de sucesso
       toast({
         title: "Disponibilidade agendada",
         description: "Disponibilidades atualizadas com sucesso.",
@@ -98,8 +106,9 @@ const FormDisponibilidade = ({
         position: "top-right",
       });
     } catch (error) {
+      // Mensagem de erro
       toast({
-        title: "Erro ao marcar ",
+        title: "Erro ao marcar",
         description: "Algo deu errado.",
         status: "error",
         duration: 5000,
@@ -109,40 +118,42 @@ const FormDisponibilidade = ({
     }
   };
 
+  // Move uma disciplina da lista de disponíveis para a lista de selecionadas
   const moverParaSelecionadas = (item) => {
-    setDisponiveis(
-      disponiveis.filter((disciplina) => disciplina.id !== item.id)
-    );
+    setDisponiveis(disponiveis.filter((disciplina) => disciplina.id !== item.id));
     setSelecionadas([...selecionadas, item]);
   };
 
+  // Move uma disciplina da lista de selecionadas para a lista de disponíveis
   const moverParaDisponiveis = (item) => {
-    setSelecionadas(
-      selecionadas.filter((disciplina) => disciplina.id !== item.id)
-    );
+    setSelecionadas(selecionadas.filter((disciplina) => disciplina.id !== item.id));
     setDisponiveis([...disponiveis, item]);
   };
 
+  // Reseta o formulário (disciplinas e curso)
   const handleCancelar = () => {
     setDisponiveis([]);
     setSelecionadas([]);
     setSelectedCurso(null);
   };
+
+  // Atualiza a lista de disciplinas ao selecionar um curso
   useEffect(() => {
     if (selectedCurso) {
       const curso = cursos.find((c) => c.id === parseInt(selectedCurso));
-      setDisponiveis(curso?.disciplinas || []); // Atualiza com disciplinas do curso selecionado
+      setDisponiveis(curso?.disciplinas || []); // Atualiza disciplinas disponíveis
     } else {
-      setDisponiveis([]); // Reseta se nenhum curso for selecionado
+      setDisponiveis([]); // Reseta a lista se nenhum curso for selecionado
     }
   }, [selectedCurso, cursos]);
 
   return (
     <form onSubmit={handleSubmit}>
       <Box p={5}>
+        {/* Grid principal: Formulário e imagem */}
         <Grid templateColumns="2fr 1fr" gap={6}>
-          {/* Coluna 1: Formulário */}
           <Box>
+            {/* Campos de entrada: Nome do professor, semestre, ano */}
             <Flex align="center" justify="space-between" mb={4}>
               <Box>
                 <Text mb={2}>Nome do professor</Text>
@@ -161,8 +172,6 @@ const FormDisponibilidade = ({
                 <Text mb={2}>Semestre</Text>
                 <Select
                   placeholder="Semestre"
-                  id="semestreInput"
-                  isRequired
                   value={semestreInput}
                   onChange={(e) => setSemestreInput(e.target.value)}
                   _focus={{
@@ -181,7 +190,6 @@ const FormDisponibilidade = ({
                   width="100px"
                   value={anoInput}
                   onChange={(e) => setAnoInput(e.target.value)}
-                  id="anoInput"
                   _focus={{
                     borderColor: "purple",
                     boxShadow: "0 0 0 1px #805AD5",
@@ -190,6 +198,7 @@ const FormDisponibilidade = ({
               </Box>
             </Flex>
 
+            {/* Tabela de seleção de disponibilidades */}
             <Text mb={2}>Disponibilidade</Text>
             <Grid templateColumns={`repeat(${days.length + 1}, 1fr)`} gap={2}>
               <Box></Box>
@@ -209,14 +218,14 @@ const FormDisponibilidade = ({
                       }
                       border="1px solid black"
                       onClick={() => handleToggle(day.id, period.id)}
-                    ></Button>
+                    />
                   ))}
                 </React.Fragment>
               ))}
             </Grid>
           </Box>
 
-          {/* Coluna 2: Imagem */}
+          {/* Imagem do lado direito */}
           <Box display="flex" justifyContent="center" alignItems="center">
             <Image
               src={imagemPrincipal}
@@ -228,7 +237,8 @@ const FormDisponibilidade = ({
 
         {/* Gerenciamento de disciplinas */}
         <Box mt={8}>
-          <Box display="flex" alignItems="center" mb={4}>
+          {/* Seleção de curso */}
+          <Flex align="center" mb={4}>
             <Text mr={4}>Cursos</Text>
             <Select
               placeholder="Selecione o Curso"
@@ -246,10 +256,10 @@ const FormDisponibilidade = ({
                 </option>
               ))}
             </Select>
-          </Box>
+          </Flex>
 
+          {/* Listas de disciplinas disponíveis e selecionadas */}
           <Flex align="center" justify="center" gap={4}>
-            {/* Disciplinas disponíveis */}
             <Box
               border="1px solid black"
               p={3}
@@ -276,9 +286,7 @@ const FormDisponibilidade = ({
                 ))}
               </List>
             </Box>
-
-            {/* Botões para mover disciplinas */}
-            <Flex direction="column" justify="center" align="center" gap={2}>
+            <Flex direction="column" align="center" gap={2}>
               <Button
                 onClick={() =>
                   disponiveis.length > 0 &&
@@ -296,8 +304,6 @@ const FormDisponibilidade = ({
                 ←
               </Button>
             </Flex>
-
-            {/* Disciplinas selecionadas */}
             <Box
               border="1px solid black"
               p={3}
@@ -326,7 +332,7 @@ const FormDisponibilidade = ({
             </Box>
           </Flex>
 
-          {/* Botões para confirmação ou cancelamento */}
+          {/* Botões de ação */}
           <Flex justify="center" mt={4} gap={4}>
             <Button colorScheme="blue" type="submit">
               Confirmar
