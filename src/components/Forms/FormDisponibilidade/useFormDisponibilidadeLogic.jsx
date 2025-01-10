@@ -26,36 +26,52 @@ const useFormDisponibilidadeLogic = (ano, professores, cursos) => {
     const fetchDisponibilidade = async () => {
       try {
         if (!selectedProfessor || !anoInput || !semestreInput) return;
-
+  
         const resultado = await getDispProf(selectedProfessor.id);
-
+  
+        // Filtrar disponibilidades por ano e semestre
         const disponibilidadesFiltradas = resultado.filter(
           (disp) =>
             disp.ano === parseInt(anoInput) &&
             disp.semestre === parseInt(semestreInput)
         );
-
+  
+        // Formatar disponibilidade por dia e turno
         const disponibilidadeFormatada = disponibilidadesFiltradas.reduce(
           (acc, disp) => {
             const dayId = disp.diaSemana.id;
             const periodId = disp.turno.id;
-
+  
             if (!acc[dayId]) acc[dayId] = {};
             acc[dayId][periodId] = true;
-
+  
             return acc;
           },
           {}
         );
-
+  
+        // Atualizar estado de disponibilidade
         setDisponibilidade(disponibilidadeFormatada);
+  
+        // Extraindo disciplinas sem duplicatas (baseado no nome)
+        const disciplinasUnicas = [];
+        disponibilidadesFiltradas.forEach((disp) => {
+          const { disciplina } = disp;
+          if (!disciplinasUnicas.some((d) => d.nome === disciplina.nome)) {
+            disciplinasUnicas.push(disciplina);
+          }
+        });
+  
+        // Atualizar as disciplinas selecionadas
+        setSelecionadas(disciplinasUnicas);
       } catch (error) {
         console.log("Erro inesperado: " + error);
       }
     };
-
+  
     fetchDisponibilidade();
   }, [selectedProfessor, anoInput, semestreInput]);
+  
 
   // Atualiza a lista de disciplinas disponíveis ao selecionar um curso
   useEffect(() => {
