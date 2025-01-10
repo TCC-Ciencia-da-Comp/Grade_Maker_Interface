@@ -10,24 +10,24 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import React from "react";
-import imagemPrincipal from "../../assets/ImagemFigma.png";
 import FormDisponibilidade from "../../components/Forms/FormDisponibilidade";
 import { getCursos, getDias, getDispProf, getTurnos } from "./service";
 import FormDisponibilidade2 from "../../components/Forms/FormDisponibilidade2";
 import { getProfessor } from "../Professor/service";
+import FormDisponibilidadeVisual from "../../components/Forms/FormDisponibilidade/FormDisponibilidadeVisual";
+import imagemPrincipal from "../../assets/ImagemFigma.png";
 
 export default function Disponibilidade() {
   const [dias, setDias] = useState([]);
   const [turnos, setTurnos] = useState([]);
   const [anoAtual, setAnoAtual] = useState(new Date().getFullYear());
   const [disponibilidade, setDisponibilidade] = useState([]);
-  const [cursos, setCursos] = useState([])
-  const [professores, setProfessores] = useState([])
+  const [cursos, setCursos] = useState([]);
+  const [professores, setProfessores] = useState([]);
   const professor = {
     id: 1,
-    nome:"Eliel Silva da Cruz"
-  }
-
+    nome: "Eliel Silva da Cruz",
+  };
 
   useEffect(() => {
     const fetchDias = async () => {
@@ -41,8 +41,8 @@ export default function Disponibilidade() {
     fetchDias();
   }, []);
 
-  useEffect(()=> {
-    const fetchProfessores = async ()=>{
+  useEffect(() => {
+    const fetchProfessores = async () => {
       try {
         const resultado = await getProfessor();
         setProfessores(resultado);
@@ -51,20 +51,20 @@ export default function Disponibilidade() {
       }
     };
     fetchProfessores();
-  },[])
+  }, []);
 
   useEffect(() => {
     const fetchCursos = async () => {
       try {
         const resultado = await getCursos();
         //console.log(resultado.data)
-        setCursos(resultado.data)
+        setCursos(resultado.data);
       } catch (error) {
         console.log(error);
       }
     };
     fetchCursos();
-  },[]);
+  }, []);
 
   useEffect(() => {
     const fetchTurnos = async () => {
@@ -77,21 +77,18 @@ export default function Disponibilidade() {
     };
     fetchTurnos();
   }, []);
- 
-  useEffect(() => { 
+
+  useEffect(() => {
     const fetchDisponibilidade = async () => {
       try {
         const resultado = await getDispProf(39);
-        setDisponibilidade(resultado.data)
+        setDisponibilidade(resultado.data);
       } catch (error) {
         console.log("Erro inesperado: " + error);
       }
     };
     fetchDisponibilidade();
   }, []);
-
-
-
 
   const handleFormChange = (field, value) => {
     console.log(`${field}: ${value}`);
@@ -119,19 +116,11 @@ export default function Disponibilidade() {
         >
           Disponibilidade do professor
         </Heading>
-        <FormDisponibilidade2
-          nomeProfessor=""
-          semestre="5"
+        <FormDisponibilidadeVisual
           ano={anoAtual}
           cursos={cursos}
-          disponibilidade={disponibilidade}
-          onChange={(field, value) => handleFormChange(field, value)}
-          onDisponibilidadeChange={(newDisponibilidade) =>
-            setDisponibilidade(newDisponibilidade)
-          }
           days={dias}
           turnos={turnos}
-          professor={professor}
           professores={professores}
         />
       </div>
