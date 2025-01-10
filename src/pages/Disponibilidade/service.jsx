@@ -147,3 +147,23 @@ export const insertListaDisponibilidade = async (payload) =>{
     setErro(erro.message);
   }
 }
+
+export const deleteteByIdProfessorAnoSemestre = async(idProfessor, ano, semestre)=>{
+try{
+  const queryParams = new URLSearchParams({
+    idProfessor: idProfessor,
+    ano: ano,
+    semestre: semestre
+  })
+  const url = `http://localhost:8080/api/disponibilidade/lista?{queryParams.toString()}`
+  const resposta = await fetch(url, {
+    method: 'DELETE'
+  });
+  if(!resposta.ok){
+    console.log('erro ao deletar disponibilidades')
+  }
+  return await resposta.json();
+}catch(error){
+  console.log("Erro ao deletar disponibilidade: \n" + error)
+}
+}

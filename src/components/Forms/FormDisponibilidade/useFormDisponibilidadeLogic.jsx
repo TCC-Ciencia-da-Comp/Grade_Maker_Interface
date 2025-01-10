@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useToast } from "@chakra-ui/react";
 import {
   deleteteByIdProf,
+  deleteteByIdProfessorAnoSemestre,
   getDispProf,
   insertDisponibilidade,
   insertListaDisponibilidade,
@@ -109,7 +110,6 @@ const useFormDisponibilidadeLogic = (ano, professores, cursos) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(disponibilidade);
     if (
       !selectedProfessor ||
       !semestreInput ||
@@ -141,7 +141,7 @@ const useFormDisponibilidadeLogic = (ano, professores, cursos) => {
       });
     });
     try {
-      deleteteByIdProf(selectedProfessor?.id);
+      deleteteByIdProfessorAnoSemestre(selectedProfessor?.id, anoInput, semestreInput);
       try{
         insertListaDisponibilidade(payload)
       }catch(error){
