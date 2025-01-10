@@ -125,3 +125,25 @@ export const getCursos = async ()=>{
     setErro(erro.message);
   }
 }
+
+export const insertListaDisponibilidade = async (payload) =>{
+  try {
+    const resposta = await fetch("http://localhost:8080/api/disponibilidade/lista", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!resposta.ok) {
+      throw new Error(`HTTP error! status: ${resposta.status}`);
+    }
+
+    const dadosJson = await resposta.json();
+    return dadosJson;
+  } catch (erro) {
+    console.error("Erro ao inserir os Turnos", erro);
+    setErro(erro.message);
+  }
+}

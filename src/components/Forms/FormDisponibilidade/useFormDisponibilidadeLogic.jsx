@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import { useToast } from "@chakra-ui/react";
-import { deleteteByIdProf, getDispProf, insertDisponibilidade } from "../../../pages/Disponibilidade/service";
+import {
+  deleteteByIdProf,
+  getDispProf,
+  insertDisponibilidade,
+  insertListaDisponibilidade,
+} from "../../../pages/Disponibilidade/service";
 
 const useFormDisponibilidadeLogic = (ano, professores, cursos) => {
   const toast = useToast();
@@ -24,18 +29,23 @@ const useFormDisponibilidadeLogic = (ano, professores, cursos) => {
         const resultado = await getDispProf(selectedProfessor.id);
 
         const disponibilidadesFiltradas = resultado.filter(
-          (disp) => disp.ano === parseInt(anoInput) && disp.semestre === parseInt(semestreInput)
+          (disp) =>
+            disp.ano === parseInt(anoInput) &&
+            disp.semestre === parseInt(semestreInput)
         );
 
-        const disponibilidadeFormatada = disponibilidadesFiltradas.reduce((acc, disp) => {
-          const dayId = disp.diaSemana.id;
-          const periodId = disp.turno.id;
+        const disponibilidadeFormatada = disponibilidadesFiltradas.reduce(
+          (acc, disp) => {
+            const dayId = disp.diaSemana.id;
+            const periodId = disp.turno.id;
 
-          if (!acc[dayId]) acc[dayId] = {};
-          acc[dayId][periodId] = true;
+            if (!acc[dayId]) acc[dayId] = {};
+            acc[dayId][periodId] = true;
 
-          return acc;
-        }, {});
+            return acc;
+          },
+          {}
+        );
 
         setDisponibilidade(disponibilidadeFormatada);
       } catch (error) {
@@ -50,8 +60,14 @@ const useFormDisponibilidadeLogic = (ano, professores, cursos) => {
   useEffect(() => {
     if (selectedCurso) {
       const curso = cursos.find((c) => c.id === parseInt(selectedCurso));
-      setDisponiveis(curso?.disciplinas || []);
-      setSelecionadas([]);
+
+      // Filtra disciplinas que não estão nas selecionadas
+      const disciplinasFiltradas = (curso?.disciplinas || []).filter(
+        (disciplina) => !selecionadas.some((sel) => sel.id === disciplina.id)
+      );
+
+      setDisponiveis(disciplinasFiltradas);
+      setSelecionadas((prevSelecionadas) => [...prevSelecionadas]); // Mantém selecionadas
     } else {
       setDisponiveis([]);
       setSelecionadas([]);
@@ -60,13 +76,17 @@ const useFormDisponibilidadeLogic = (ano, professores, cursos) => {
 
   // Move uma disciplina da lista de disponíveis para a lista de selecionadas
   const moverParaSelecionadas = (item) => {
-    setDisponiveis(disponiveis.filter((disciplina) => disciplina.id !== item.id));
+    setDisponiveis(
+      disponiveis.filter((disciplina) => disciplina.id !== item.id)
+    );
     setSelecionadas([...selecionadas, item]);
   };
 
   // Move uma disciplina da lista de selecionadas para a lista de disponíveis
   const moverParaDisponiveis = (item) => {
-    setSelecionadas(selecionadas.filter((disciplina) => disciplina.id !== item.id));
+    setSelecionadas(
+      selecionadas.filter((disciplina) => disciplina.id !== item.id)
+    );
     setDisponiveis([...disponiveis, item]);
   };
 
@@ -89,61 +109,49 @@ const useFormDisponibilidadeLogic = (ano, professores, cursos) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!selectedProfessor) {
-      toast({
-        title: "Erro",
-        description: "Por favor, selecione um professor.",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-        position: "top-right",
-      });
+    console.log(disponibilidade);
+    if (
+      !selectedProfessor ||
+      !semestreInput ||
+      !anoInput ||
+      selecionadas.length === 0
+    ) {
+      console.error("Preencha todos os campos antes de enviar.");
       return;
     }
+    //Lista de objetos  será enviada pro back
+    const payload = [];
 
-    const selecionados = Object.keys(disponibilidade).flatMap((dayId) => {
-      const turnosSelecionados = Object.keys(disponibilidade[dayId])
-        .filter((periodId) => disponibilidade[dayId][periodId])
-        .map((periodId) => ({ dayId, periodId }));
-      return turnosSelecionados;
+    //Percorrendo as disciplinas enviadas
+    selecionadas.forEach((disciplina) => {
+      // Object.Entries, tranforma o objetos em listas pares chave-valor, precisamos fazer isso para desserializar disponibilidade
+      Object.entries(disponibilidade).forEach(([idDiaSemana, turnos]) => {
+        Object.entries(turnos).forEach(([idTurno, isAvailable]) => {
+          if (isAvailable) {
+            payload.push({
+              idProfessor: selectedProfessor.id,
+              idDisciplina: disciplina.id,
+              idTurno: parseInt(idTurno),
+              idDiaSemana: parseInt(idDiaSemana),
+              semestre: parseInt(semestreInput),
+              ano: parseInt(anoInput),
+            });
+          }
+        });
+      });
     });
-
     try {
-      await deleteteByIdProf(selectedProfessor.id);
-
-      await Promise.all(
-        selecionados.map((disp) =>
-          insertDisponibilidade({
-            professorId: selectedProfessor.id,
-            diaSemanaId: disp.dayId,
-            turnoId: disp.periodId,
-            ano: anoInput,
-            semestre: semestreInput,
-          })
-        )
-      );
-
-      toast({
-        title: "Disponibilidade agendada",
-        description: "Disponibilidades atualizadas com sucesso.",
-        status: "success",
-        duration: 5000,
-        isClosable: true,
-        position: "top-right",
-      });
+      deleteteByIdProf(selectedProfessor?.id);
+      try{
+        insertListaDisponibilidade(payload)
+      }catch(error){
+        console.log("Erro na inserção das disponibilidades \n"+error);
+      }
     } catch (error) {
-      toast({
-        title: "Erro ao marcar",
-        description: "Algo deu errado.",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-        position: "top-right",
-      });
+      console.log("Erro ao deletar as disponibilidades anteriores \n" +error);
     }
+    console.log("Payload enviado ao backend:", payload);
   };
-
   return {
     disponibilidade,
     anoInput,

@@ -348,3 +348,66 @@ const FormDisponibilidade = ({
 };
 
 export default FormDisponibilidade;
+
+===============================================================================
+handleSubmit:
+
+
+
+
+
+
+e.preventDefault();
+
+    if (!selectedProfessor) {
+      toast({
+        title: "Erro",
+        description: "Por favor, selecione um professor.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "top-right",
+      });
+      return;
+    }
+
+    const selecionados = Object.keys(disponibilidade).flatMap((dayId) => {
+      const turnosSelecionados = Object.keys(disponibilidade[dayId])
+        .filter((periodId) => disponibilidade[dayId][periodId])
+        .map((periodId) => ({ dayId, periodId }));
+      return turnosSelecionados;
+    });
+
+    try {
+      //await deleteteByIdProf(selectedProfessor.id);
+
+      await Promise.all(
+        selecionados.map((disp) =>
+          insertDisponibilidade({
+            professorId: selectedProfessor.id,
+            diaSemanaId: disp.dayId,
+            turnoId: disp.periodId,
+            ano: anoInput,
+            semestre: semestreInput,
+          })
+        )
+      );
+
+      toast({
+        title: "Disponibilidade agendada",
+        description: "Disponibilidades atualizadas com sucesso.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+        position: "top-right",
+      });
+    } catch (error) {
+      toast({
+        title: "Erro ao marcar",
+        description: "Algo deu errado.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "top-right",
+      });
+    }
