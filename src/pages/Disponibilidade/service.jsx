@@ -155,7 +155,7 @@ try{
     ano: ano,
     semestre: semestre
   })
-  const url = `http://localhost:8080/api/disponibilidade/lista?{queryParams.toString()}`
+  const url = `http://localhost:8080/api/disponibilidade/professor?${queryParams.toString()}`
   const resposta = await fetch(url, {
     method: 'DELETE'
   });

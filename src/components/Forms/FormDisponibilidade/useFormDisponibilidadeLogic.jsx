@@ -110,21 +110,19 @@ const useFormDisponibilidadeLogic = (ano, professores, cursos) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (
-      !selectedProfessor ||
-      !semestreInput ||
-      !anoInput ||
-      selecionadas.length === 0
-    ) {
-      console.error("Preencha todos os campos antes de enviar.");
+    if (!selectedProfessor || !semestreInput || !anoInput || selecionadas.length === 0) {
+      toast({
+        title: "Erro",
+        description: "Preencha todos os campos antes de enviar.",
+        status: "error",
+        duration: 4000,
+        position: "top-right",
+        isClosable: true,
+      });
       return;
     }
-    //Lista de objetos  será enviada pro back
     const payload = [];
-
-    //Percorrendo as disciplinas enviadas
     selecionadas.forEach((disciplina) => {
-      // Object.Entries, tranforma o objetos em listas pares chave-valor, precisamos fazer isso para desserializar disponibilidade
       Object.entries(disponibilidade).forEach(([idDiaSemana, turnos]) => {
         Object.entries(turnos).forEach(([idTurno, isAvailable]) => {
           if (isAvailable) {
@@ -141,17 +139,29 @@ const useFormDisponibilidadeLogic = (ano, professores, cursos) => {
       });
     });
     try {
-      deleteteByIdProfessorAnoSemestre(selectedProfessor?.id, anoInput, semestreInput);
-      try{
-        insertListaDisponibilidade(payload)
-      }catch(error){
-        console.log("Erro na inserção das disponibilidades \n"+error);
-      }
+      await deleteteByIdProfessorAnoSemestre(selectedProfessor?.id, anoInput, semestreInput);
+      await insertListaDisponibilidade(payload);
+      toast({
+        title: "Sucesso",
+        description: "Disponibilidade salva com sucesso.",
+        status: "success",
+        duration: 4000,
+        position: "top-right",
+        isClosable: true,
+      });
     } catch (error) {
-      console.log("Erro ao deletar as disponibilidades anteriores \n" +error);
+      toast({
+        title: "Erro",
+        description: "Falha ao salvar disponibilidade. 10",
+        status: "error",
+        duration: 4000,
+        position: "top-right",
+        isClosable: true,
+      });
     }
-    console.log("Payload enviado ao backend:", payload);
   };
+
+  
   return {
     disponibilidade,
     anoInput,
