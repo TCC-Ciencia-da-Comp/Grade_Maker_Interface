@@ -14,13 +14,7 @@ import {
 import useFormDisponibilidadeLogic from "./useFormDisponibilidadeLogic";
 import imagemPrincipal from "../../../assets/ImagemFigma.png";
 
-const FormDisponibilidade = ({
-  ano,
-  days = [],
-  turnos = [],
-  professores = [],
-  cursos = [], // Adicionado para incluir cursos e disciplinas
-}) => {
+const FormDisponibilidade = ({ ano, days = [], turnos = [], professores = [], cursos = [] }) => {
   const {
     disponibilidade,
     anoInput,
@@ -104,6 +98,45 @@ const FormDisponibilidade = ({
                 />
               </Box>
             </Flex>
+
+            {/* Disponibilidade */}
+            <Text mb={2}>Disponibilidade</Text>
+            <Grid templateColumns={`repeat(${days.length + 1}, 1fr)`} gap={2}>
+              <Box></Box>
+              {days.map((day) => (
+                <Text key={day.id} textAlign="center" fontSize="sm">
+                  {day?.descricao?.slice(0,3)}
+                </Text>
+              ))}
+              {turnos.map((period) => (
+                <React.Fragment key={period.id}>
+                  <Text>{period.descricao}</Text>
+                  {days.map((day) => (
+                    <Button
+                      key={`${day.id}-${period.id}`}
+                      colorScheme={
+                        disponibilidade[day.id]?.[period.id] ? "purple" : "gray"
+                      }
+                      border="1px solid black"
+                      onClick={() => handleToggle(day.id, period.id)}
+                    />
+                  ))}
+                </React.Fragment>
+              ))}
+            </Grid>
+          </Box>
+
+          {/* Coluna 2: Imagem */}
+          <Box display="flex" justifyContent="center" alignItems="center">
+            <Image
+              src={imagemPrincipal}
+              alt="Professor working with data"
+              boxSize="400px"
+            />
+          </Box>
+        </Grid>
+
+
 
             {/* Seleção de Curso */}
             <Flex align="center" mb={4}>
@@ -199,17 +232,8 @@ const FormDisponibilidade = ({
                 </List>
               </Box>
             </Flex>
-          </Box>
 
-          {/* Coluna 2: Imagem */}
-          <Box display="flex" justifyContent="center" alignItems="center">
-            <Image
-              src={imagemPrincipal}
-              alt="Professor working with data"
-              boxSize="400px"
-            />
-          </Box>
-        </Grid>
+
         <Flex justify={"flex-end"} mt={4} pr={320}>
           <Box width={"100px"}>
             <Button
@@ -230,11 +254,6 @@ const FormDisponibilidade = ({
               Enviar
             </Button>
           </Box>
-          <Box width={"100px"}>
-            <Button colorScheme="red" onClick={handleCancelar}>
-              Cancelar
-            </Button>
-          </Box>
         </Flex>
       </Box>
     </form>
@@ -242,3 +261,4 @@ const FormDisponibilidade = ({
 };
 
 export default FormDisponibilidade;
+
