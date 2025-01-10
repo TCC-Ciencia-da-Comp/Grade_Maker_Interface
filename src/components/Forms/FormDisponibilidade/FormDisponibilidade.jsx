@@ -13,7 +13,7 @@ import useFormDisponibilidadeLogic from "./useFormDisponibilidadeLogic";
 import imagemPrincipal from "../../../assets/ImagemFigma.png";
 
 
-const FormDisponibilidadeVisual = ({
+const FormDisponibilidade = ({
   ano,
   days = [],
   turnos = [],
@@ -102,7 +102,7 @@ const FormDisponibilidadeVisual = ({
               <Box></Box>
               {days.map((day) => (
                 <Text key={day.id} textAlign="center" fontSize="sm">
-                  {day.descricao}
+                  {day?.descricao?.slice(0,3)}
                 </Text>
               ))}
               {turnos.map((period) => (
@@ -158,5 +158,5 @@ const FormDisponibilidadeVisual = ({
   );
 };
 
-export default FormDisponibilidadeVisual;
+export default FormDisponibilidade;
 

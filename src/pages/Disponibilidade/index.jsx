@@ -10,11 +10,9 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import React from "react";
-import FormDisponibilidade from "../../components/Forms/FormDisponibilidade";
 import { getCursos, getDias, getDispProf, getTurnos } from "./service";
-import FormDisponibilidade2 from "../../components/Forms/FormDisponibilidade2";
 import { getProfessor } from "../Professor/service";
-import FormDisponibilidadeVisual from "../../components/Forms/FormDisponibilidade/FormDisponibilidadeVisual";
+import FormDisponibilidade from "../../components/Forms/FormDisponibilidade/FormDisponibilidade";
 import imagemPrincipal from "../../assets/ImagemFigma.png";
 
 export default function Disponibilidade() {
@@ -116,7 +114,7 @@ export default function Disponibilidade() {
         >
           Disponibilidade do professor
         </Heading>
-        <FormDisponibilidadeVisual
+        <FormDisponibilidade
           ano={anoAtual}
           cursos={cursos}
           days={dias}
