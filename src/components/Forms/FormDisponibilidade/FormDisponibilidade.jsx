@@ -8,16 +8,18 @@ import {
   Text,
   Image,
   Select,
+  List,
+  ListItem,
 } from "@chakra-ui/react";
 import useFormDisponibilidadeLogic from "./useFormDisponibilidadeLogic";
 import imagemPrincipal from "../../../assets/ImagemFigma.png";
-
 
 const FormDisponibilidade = ({
   ano,
   days = [],
   turnos = [],
   professores = [],
+  cursos = [], // Adicionado para incluir cursos e disciplinas
 }) => {
   const {
     disponibilidade,
@@ -27,9 +29,16 @@ const FormDisponibilidade = ({
     setSemestreInput,
     selectedProfessor,
     setSelectedProfessor,
+    selectedCurso,
+    setSelectedCurso,
+    disponiveis,
+    selecionadas,
+    moverParaSelecionadas,
+    moverParaDisponiveis,
+    handleCancelar,
     handleToggle,
     handleSubmit,
-  } = useFormDisponibilidadeLogic(ano, professores);
+  } = useFormDisponibilidadeLogic(ano, professores, cursos);
 
   return (
     <form onSubmit={handleSubmit}>
@@ -96,31 +105,100 @@ const FormDisponibilidade = ({
               </Box>
             </Flex>
 
-            {/* Disponibilidade */}
-            <Text mb={2}>Disponibilidade</Text>
-            <Grid templateColumns={`repeat(${days.length + 1}, 1fr)`} gap={2}>
-              <Box></Box>
-              {days.map((day) => (
-                <Text key={day.id} textAlign="center" fontSize="sm">
-                  {day?.descricao?.slice(0,3)}
+            {/* Seleção de Curso */}
+            <Flex align="center" mb={4}>
+              <Text mr={4}>Cursos</Text>
+              <Select
+                placeholder="Selecione o Curso"
+                width="400px"
+                value={selectedCurso || ""}
+                onChange={(e) => setSelectedCurso(e.target.value)}
+                _focus={{
+                  borderColor: "purple",
+                  boxShadow: "0 0 0 1px #805AD5",
+                }}
+              >
+                {cursos.map((curso) => (
+                  <option key={curso.id} value={curso.id}>
+                    {curso.nome}
+                  </option>
+                ))}
+              </Select>
+            </Flex>
+
+            {/* Listas de Disciplinas */}
+            <Flex align="center" justify="center" gap={4} mt={4}>
+              <Box
+                border="1px solid black"
+                p={3}
+                borderRadius="5px"
+                width="200px"
+                height="250px"
+                overflow="auto"
+              >
+                <Text fontWeight="bold" mb={2}>
+                  Disponíveis
                 </Text>
-              ))}
-              {turnos.map((period) => (
-                <React.Fragment key={period.id}>
-                  <Text>{period.descricao}</Text>
-                  {days.map((day) => (
-                    <Button
-                      key={`${day.id}-${period.id}`}
-                      colorScheme={
-                        disponibilidade[day.id]?.[period.id] ? "purple" : "gray"
-                      }
-                      border="1px solid black"
-                      onClick={() => handleToggle(day.id, period.id)}
-                    />
+                <List>
+                  {disponiveis.map((disciplina) => (
+                    <ListItem key={disciplina.id}>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        width="100%"
+                        onClick={() => moverParaSelecionadas(disciplina)}
+                      >
+                        {disciplina.nome}
+                      </Button>
+                    </ListItem>
                   ))}
-                </React.Fragment>
-              ))}
-            </Grid>
+                </List>
+              </Box>
+              <Flex direction="column" align="center" gap={2}>
+                <Button
+                  onClick={() =>
+                    disponiveis.length > 0 &&
+                    moverParaSelecionadas(disponiveis[0])
+                  }
+                >
+                  →
+                </Button>
+                <Button
+                  onClick={() =>
+                    selecionadas.length > 0 &&
+                    moverParaDisponiveis(selecionadas[0])
+                  }
+                >
+                  ←
+                </Button>
+              </Flex>
+              <Box
+                border="1px solid black"
+                p={3}
+                borderRadius="5px"
+                width="200px"
+                height="250px"
+                overflow="auto"
+              >
+                <Text fontWeight="bold" mb={2}>
+                  Selecionadas
+                </Text>
+                <List>
+                  {selecionadas.map((disciplina) => (
+                    <ListItem key={disciplina.id}>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        width="100%"
+                        onClick={() => moverParaDisponiveis(disciplina)}
+                      >
+                        {disciplina.nome}
+                      </Button>
+                    </ListItem>
+                  ))}
+                </List>
+              </Box>
+            </Flex>
           </Box>
 
           {/* Coluna 2: Imagem */}
@@ -152,6 +230,11 @@ const FormDisponibilidade = ({
               Enviar
             </Button>
           </Box>
+          <Box width={"100px"}>
+            <Button colorScheme="red" onClick={handleCancelar}>
+              Cancelar
+            </Button>
+          </Box>
         </Flex>
       </Box>
     </form>
@@ -159,4 +242,3 @@ const FormDisponibilidade = ({
 };
 
 export default FormDisponibilidade;
-

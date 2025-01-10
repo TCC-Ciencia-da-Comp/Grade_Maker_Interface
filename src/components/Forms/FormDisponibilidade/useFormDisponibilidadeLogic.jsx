@@ -2,12 +2,19 @@ import { useEffect, useState } from "react";
 import { useToast } from "@chakra-ui/react";
 import { deleteteByIdProf, getDispProf, insertDisponibilidade } from "../../../pages/Disponibilidade/service";
 
-const useFormDisponibilidadeLogic = (ano, professores) => {
+const useFormDisponibilidadeLogic = (ano, professores, cursos) => {
   const toast = useToast();
+
+  // Estados principais
   const [disponibilidade, setDisponibilidade] = useState({});
   const [anoInput, setAnoInput] = useState(ano);
   const [semestreInput, setSemestreInput] = useState("");
   const [selectedProfessor, setSelectedProfessor] = useState(null);
+
+  // Estados adicionais para gerenciamento de disciplinas
+  const [selectedCurso, setSelectedCurso] = useState(null);
+  const [disponiveis, setDisponiveis] = useState([]);
+  const [selecionadas, setSelecionadas] = useState([]);
 
   useEffect(() => {
     const fetchDisponibilidade = async () => {
@@ -16,12 +23,10 @@ const useFormDisponibilidadeLogic = (ano, professores) => {
 
         const resultado = await getDispProf(selectedProfessor.id);
 
-        // Filtra as disponibilidades pelo ano e semestre
         const disponibilidadesFiltradas = resultado.filter(
           (disp) => disp.ano === parseInt(anoInput) && disp.semestre === parseInt(semestreInput)
         );
 
-        // Converte a disponibilidade filtrada para um formato de objeto
         const disponibilidadeFormatada = disponibilidadesFiltradas.reduce((acc, disp) => {
           const dayId = disp.diaSemana.id;
           const periodId = disp.turno.id;
@@ -40,6 +45,37 @@ const useFormDisponibilidadeLogic = (ano, professores) => {
 
     fetchDisponibilidade();
   }, [selectedProfessor, anoInput, semestreInput]);
+
+  // Atualiza a lista de disciplinas disponíveis ao selecionar um curso
+  useEffect(() => {
+    if (selectedCurso) {
+      const curso = cursos.find((c) => c.id === parseInt(selectedCurso));
+      setDisponiveis(curso?.disciplinas || []);
+      setSelecionadas([]);
+    } else {
+      setDisponiveis([]);
+      setSelecionadas([]);
+    }
+  }, [selectedCurso, cursos]);
+
+  // Move uma disciplina da lista de disponíveis para a lista de selecionadas
+  const moverParaSelecionadas = (item) => {
+    setDisponiveis(disponiveis.filter((disciplina) => disciplina.id !== item.id));
+    setSelecionadas([...selecionadas, item]);
+  };
+
+  // Move uma disciplina da lista de selecionadas para a lista de disponíveis
+  const moverParaDisponiveis = (item) => {
+    setSelecionadas(selecionadas.filter((disciplina) => disciplina.id !== item.id));
+    setDisponiveis([...disponiveis, item]);
+  };
+
+  // Reseta o formulário
+  const handleCancelar = () => {
+    setDisponiveis([]);
+    setSelecionadas([]);
+    setSelectedCurso(null);
+  };
 
   const handleToggle = (dayId, periodId) => {
     setDisponibilidade((prevDisponibilidade) => ({
@@ -116,6 +152,13 @@ const useFormDisponibilidadeLogic = (ano, professores) => {
     setSemestreInput,
     selectedProfessor,
     setSelectedProfessor,
+    selectedCurso,
+    setSelectedCurso,
+    disponiveis,
+    selecionadas,
+    moverParaSelecionadas,
+    moverParaDisponiveis,
+    handleCancelar,
     handleToggle,
     handleSubmit,
   };
