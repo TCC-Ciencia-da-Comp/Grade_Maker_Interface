@@ -4,7 +4,6 @@ import {
   deleteteByIdProf,
   deleteteByIdProfessorAnoSemestre,
   getDispProf,
-  insertDisponibilidade,
   insertListaDisponibilidade,
 } from "../../../pages/Disponibilidade/service";
 

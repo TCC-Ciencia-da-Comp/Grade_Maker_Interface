@@ -4,7 +4,7 @@ import Disciplina from './pages/Disciplina';
 import Professor from './pages/Professor';
 import Curso from './pages/Curso';
 import Disponibilidade from './pages/Disponibilidade';
-import Login from './auth/Login';
+import Login from './pages/Login';
 import MainLayout from './components/MainLayout';
 import PrivateRoute from './auth/PrivateRoute'; // Certifique-se do caminho correto
 
