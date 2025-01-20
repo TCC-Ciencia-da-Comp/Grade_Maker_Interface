@@ -1,32 +1,24 @@
 import Professor from ".";
+import Api from "../../service/Api";
 
 //get de Professor
 export const getProfessor = async () => {
   try {
-    const resposta = await fetch("http://localhost:8080/api/professor");
-    if (!resposta.ok) {
-      throw new Error(`HTTP error! status: ${resposta.status}`);
-    }
-    const dadosJson = await resposta.json();
-  
-    if (Array.isArray(dadosJson)) {
-      return dadosJson;
-    } else if (typeof dadosJson === "object" && dadosJson !== null) {
-      const arrayProfessores = Object.values(dadosJson).find(Array.isArray);
-      if (arrayProfessores) {
-        return arrayProfessores;
-      } else {
-        throw new Error(
-          "Não foi possível encontrar um array de professores nos dados"
-        );
-      }
+    const resposta = await Api.get("/professor");
+    //console.log(resposta);
+
+    // Verifica se os dados estão no formato esperado
+    if (resposta.data && Array.isArray(resposta.data)) {
+      return resposta.data; // Retorna o array de professores diretamente
     } else {
       throw new Error("Formato de dados inesperado");
     }
   } catch (erro) {
-    console.error("Erro ao buscar os professores:", erro);
+    console.error("Erro ao buscar os professores:", erro.message);
+    throw erro; // Repropaga o erro para ser tratado em outro lugar
   }
 };
+
 
 //get de Professor
 export const getProfessorDisciplina = async () => {

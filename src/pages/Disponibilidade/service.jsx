@@ -1,40 +1,28 @@
-export const getDias = async () => {
-  const fetchDias = async () => {
-    try {
-      const resposta = await fetch("http://localhost:8080/api/dia_semana");
-      if (!resposta.ok) {
-        throw new Error(`HTTP error! status: ${resposta.status}`);
-      }
-      const dadosJson = await resposta.json();
-      if (dadosJson) {
-        return dadosJson;
-      } else {
-        throw new Error("Formato de dados inesperado");
-      }
-    } catch (erro) {
-      console.error("Erro ao buscar os dias da semana", erro);
-      setErro(erro.message);
-    }
-  };
+import Api from "../../service/Api";
 
-  return await fetchDias();
+export const getDias = async () => {
+  try {
+    const resposta = await Api.get('/dia_semana');
+
+    // Verifica se a resposta possui a estrutura esperada
+    if (resposta && resposta.data) {
+      return resposta; // Retorna os dados corretamente
+    } else {
+      throw new Error("Formato de dados inesperado");
+    }
+  } catch (erro) {
+    console.error("Erro ao buscar os dias da semana:", erro.message);
+    throw erro; // Repropaga o erro para ser tratado em outro lugar
+  }
 };
 
 export const getTurnos = async () => {
   try {
-    const resposta = await fetch("http://localhost:8080/api/turno");
-    if (!resposta.ok) {
-      throw new Error(`HTTP error! status: ${resposta.status}`);
-    }
-    const dadosJson = await resposta.json();
-    if (dadosJson) {
-      return dadosJson;	verificarIdProf(professorId);
-    } else {
-      throw new Error("Nada retornado");
-    }
+    const resposta = await Api.get("/turno");
+      return resposta;	
   } catch (erro) {
     console.error("Erro ao buscar os Turnos", erro);
-    setErro(erro.message);
+    s
   }
 };
 
@@ -61,29 +49,20 @@ export const insertDisponibilidade = async (objectDisponibilidade) => {
 };
 
 export const getDispProf = async (id) => {
-  const fetchDias = async (id) => {
     try {
-      const resposta = await fetch(
-        `http://localhost:8080/api/disponibilidade/professor/${id}`
+      const resposta = await Api.get(`/disponibilidade/professor/${id}`
       );
-      if (!resposta.ok) {
-        throw new Error(`HTTP error! status: ${resposta.status}`);
-      }
-      const dadosJson = await resposta.json();
-      if (dadosJson) { 
-        
-        return dadosJson.data;
+      console.log(resposta)
+      if (resposta) { 
+        return resposta.data
       } else {
         throw new Error("Formato de dados inesperado");
       }
     } catch (erro) {
       console.error("Erro ao buscar Disponibilidade", erro);
-      setErro(erro.message);
     }
   };
 
-  return await fetchDias(id);
-};
 
 export const deleteteByIdProf = async (id) => {
   const fetchDias = async (id) => {
@@ -110,19 +89,14 @@ export const deleteteByIdProf = async (id) => {
 
 export const getCursos = async ()=>{
   try {
-    const resposta = await fetch("http://localhost:8080/api/curso");
-    if (!resposta.ok) {
-      throw new Error(`HTTP error! status: ${resposta.status}`);
-    }
-    const dadosJson = await resposta.json();
-    if (dadosJson) {
-      return dadosJson;
+    const resposta = await Api.get("/curso");
+    if (resposta) {
+      return resposta;
     } else {
       throw new Error("Nada retornado");
     }
   } catch (erro) {
-    console.error("Erro ao buscar os Turnos", erro);
-    setErro(erro.message);
+    console.error("Erro ao buscar os Cursos", erro)
   }
 }
 
