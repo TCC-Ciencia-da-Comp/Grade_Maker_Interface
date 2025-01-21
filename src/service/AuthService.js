@@ -25,7 +25,7 @@ const AuthService = {
     }
   },
 
-  async logout() {
+  async userLogout() {
     try {
       await Api.post("/auth/logout");
       console.log("Logout realizado com sucesso!");

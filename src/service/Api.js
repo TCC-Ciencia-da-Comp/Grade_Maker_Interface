@@ -35,11 +35,11 @@ class API_GRADE_MAker {
     return this.request("GET", route);
   }
 
-  post(route, body) {
+  post(route, body = null) {
     return this.request("POST", route, body);
   }
 
-  put(route, body) {
+  put(route, body=null) {
     return this.request("PUT", route, body);
   }
 
