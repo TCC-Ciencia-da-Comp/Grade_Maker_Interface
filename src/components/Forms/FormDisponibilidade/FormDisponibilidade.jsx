@@ -1,3 +1,4 @@
+// Componente atualizado
 import React from "react";
 import {
   Box,
@@ -29,9 +30,10 @@ const FormDisponibilidade = ({ ano, days = [], turnos = [], professores = [], cu
     selecionadas,
     moverParaSelecionadas,
     moverParaDisponiveis,
-    handleCancelar,
+    handleCancelarAlteracoes,
     handleToggle,
     handleSubmit,
+    hasChanges,
   } = useFormDisponibilidadeLogic(ano, professores, cursos);
 
   return (
@@ -105,7 +107,7 @@ const FormDisponibilidade = ({ ano, days = [], turnos = [], professores = [], cu
               <Box></Box>
               {days.map((day) => (
                 <Text key={day.id} textAlign="center" fontSize="sm">
-                  {day?.descricao?.slice(0,3)}
+                  {day?.descricao?.slice(0, 3)}
                 </Text>
               ))}
               {turnos.map((period) => (
@@ -136,114 +138,129 @@ const FormDisponibilidade = ({ ano, days = [], turnos = [], professores = [], cu
           </Box>
         </Grid>
 
+        {/* Seleção de Curso */}
+        <Flex align="center" mb={4}>
+          <Text mr={4}>Cursos</Text>
+          <Select
+            placeholder="Selecione o Curso"
+            width="400px"
+            value={selectedCurso || ""}
+            onChange={(e) => setSelectedCurso(e.target.value)}
+            _focus={{
+              borderColor: "purple",
+              boxShadow: "0 0 0 1px #805AD5",
+            }}
+          >
+            {cursos.map((curso) => (
+              <option key={curso.id} value={curso.id}>
+                {curso.nome}
+              </option>
+            ))}
+          </Select>
+        </Flex>
 
+        {/* Listas de Disciplinas */}
+        <Flex align="center" justify="center" gap={4} mt={4}>
+          <Box
+            border="1px solid black"
+            p={3}
+            borderRadius="5px"
+            width="200px"
+            height="250px"
+            overflow="auto"
+          >
+            <Text fontWeight="bold" mb={2}>
+              Disponíveis
+            </Text>
+            <List>
+              {disponiveis.map((disciplina) => (
+                <ListItem key={disciplina.id}>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    width="100%"
+                    onClick={() => moverParaSelecionadas(disciplina)}
+                  >
+                    {disciplina.nome}
+                  </Button>
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+          <Flex direction="column" align="center" gap={2}>
+            <Button
+              onClick={() =>
+                disponiveis.length > 0 &&
+                moverParaSelecionadas(disponiveis[0])
+              }
+            >
+              →
+            </Button>
+            <Button
+              onClick={() =>
+                selecionadas.length > 0 &&
+                moverParaDisponiveis(selecionadas[0])
+              }
+            >
+              ←
+            </Button>
+          </Flex>
+          <Box
+            border="1px solid black"
+            p={3}
+            borderRadius="5px"
+            width="200px"
+            height="250px"
+            overflow="auto"
+          >
+            <Text fontWeight="bold" mb={2}>
+              Selecionadas
+            </Text>
+            <List>
+              {selecionadas.map((disciplina) => (
+                <ListItem key={disciplina.id}>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    width="100%"
+                    onClick={() => moverParaDisponiveis(disciplina)}
+                  >
+                    {disciplina.nome}
+                  </Button>
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+        </Flex>
 
-            {/* Seleção de Curso */}
-            <Flex align="center" mb={4}>
-              <Text mr={4}>Cursos</Text>
-              <Select
-                placeholder="Selecione o Curso"
-                width="400px"
-                value={selectedCurso || ""}
-                onChange={(e) => setSelectedCurso(e.target.value)}
-                _focus={{
-                  borderColor: "purple",
-                  boxShadow: "0 0 0 1px #805AD5",
-                }}
-              >
-                {cursos.map((curso) => (
-                  <option key={curso.id} value={curso.id}>
-                    {curso.nome}
-                  </option>
-                ))}
-              </Select>
-            </Flex>
-
-            {/* Listas de Disciplinas */}
-            <Flex align="center" justify="center" gap={4} mt={4}>
-              <Box
-                border="1px solid black"
-                p={3}
-                borderRadius="5px"
-                width="200px"
-                height="250px"
-                overflow="auto"
-              >
-                <Text fontWeight="bold" mb={2}>
-                  Disponíveis
-                </Text>
-                <List>
-                  {disponiveis.map((disciplina) => (
-                    <ListItem key={disciplina.id}>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        width="100%"
-                        onClick={() => moverParaSelecionadas(disciplina)}
-                      >
-                        {disciplina.nome}
-                      </Button>
-                    </ListItem>
-                  ))}
-                </List>
-              </Box>
-              <Flex direction="column" align="center" gap={2}>
-                <Button
-                  onClick={() =>
-                    disponiveis.length > 0 &&
-                    moverParaSelecionadas(disponiveis[0])
-                  }
-                >
-                  →
-                </Button>
-                <Button
-                  onClick={() =>
-                    selecionadas.length > 0 &&
-                    moverParaDisponiveis(selecionadas[0])
-                  }
-                >
-                  ←
-                </Button>
-              </Flex>
-              <Box
-                border="1px solid black"
-                p={3}
-                borderRadius="5px"
-                width="200px"
-                height="250px"
-                overflow="auto"
-              >
-                <Text fontWeight="bold" mb={2}>
-                  Selecionadas
-                </Text>
-                <List>
-                  {selecionadas.map((disciplina) => (
-                    <ListItem key={disciplina.id}>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        width="100%"
-                        onClick={() => moverParaDisponiveis(disciplina)}
-                      >
-                        {disciplina.nome}
-                      </Button>
-                    </ListItem>
-                  ))}
-                </List>
-              </Box>
-            </Flex>
-
-
-        <Flex justify={"flex-end"} mt={4} pr={320}>
-          <Box width={"100px"}>
+        <Flex justify="flex-end" mt={4} pr={320} gap={4}>
+          <Box width="100px">
+            <Button
+              type="button"
+              width="100%"
+              colorScheme="red"
+              onClick={handleCancelarAlteracoes}
+              isDisabled={!hasChanges} // Desativa se não houver alterações
+              _focus={{
+                boxShadow: "0 0 1px 2px rgba(255, 99, 71, .75), 0 1px 1px rgba(0, 0, 0, .15)",
+              }}
+              _hover={{
+                backgroundColor: "red.500",
+                color: "white",
+                transform: "scale(1.1)",
+              }}
+            >
+              Cancelar
+            </Button>
+          </Box>
+          <Box width="100px">
             <Button
               type="submit"
-              width={"100%"}
-              color={"white"}
+              width="100%"
               colorScheme="purple"
+              isDisabled={!hasChanges} // Só fica ativo se houver alterações
               _focus={{
-                boxShadow:
-                  "0 0 1px 2px rgba(173, 216, 230, .75), 0 1px 1px rgba(0, 0, 0, .15)",
+                boxShadow: "0 0 1px 2px rgba(173, 216, 230, .75), 0 1px 1px rgba(0, 0, 0, .15)",
               }}
               _hover={{
                 backgroundColor: "purple",
@@ -261,4 +278,3 @@ const FormDisponibilidade = ({ ano, days = [], turnos = [], professores = [], cu
 };
 
 export default FormDisponibilidade;
-

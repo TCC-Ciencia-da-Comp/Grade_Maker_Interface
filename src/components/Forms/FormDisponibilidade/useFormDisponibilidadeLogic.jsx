@@ -21,37 +21,40 @@ const useFormDisponibilidadeLogic = (ano, professores, cursos) => {
   const [disponiveis, setDisponiveis] = useState([]);
   const [selecionadas, setSelecionadas] = useState([]);
 
+  // Estado para rastrear alterações
+  const [hasChanges, setHasChanges] = useState(false);
+
   useEffect(() => {
     const fetchDisponibilidade = async () => {
       try {
         if (!selectedProfessor || !anoInput || !semestreInput) return;
-  
+
         const resultado = await getDispProf(selectedProfessor.id);
-  
+
         // Filtrar disponibilidades por ano e semestre
         const disponibilidadesFiltradas = resultado.filter(
           (disp) =>
             disp.ano === parseInt(anoInput) &&
             disp.semestre === parseInt(semestreInput)
         );
-  
+
         // Formatar disponibilidade por dia e turno
         const disponibilidadeFormatada = disponibilidadesFiltradas.reduce(
           (acc, disp) => {
             const dayId = disp.diaSemana.id;
             const periodId = disp.turno.id;
-  
+
             if (!acc[dayId]) acc[dayId] = {};
             acc[dayId][periodId] = true;
-  
+
             return acc;
           },
           {}
         );
-  
+
         // Atualizar estado de disponibilidade
         setDisponibilidade(disponibilidadeFormatada);
-  
+
         // Extraindo disciplinas sem duplicatas (baseado no nome)
         const disciplinasUnicas = [];
         disponibilidadesFiltradas.forEach((disp) => {
@@ -60,17 +63,16 @@ const useFormDisponibilidadeLogic = (ano, professores, cursos) => {
             disciplinasUnicas.push(disciplina);
           }
         });
-  
+
         // Atualizar as disciplinas selecionadas
         setSelecionadas(disciplinasUnicas);
       } catch (error) {
         console.log("Erro inesperado: " + error);
       }
     };
-  
+
     fetchDisponibilidade();
   }, [selectedProfessor, anoInput, semestreInput]);
-  
 
   // Atualiza a lista de disciplinas disponíveis ao selecionar um curso
   useEffect(() => {
@@ -96,6 +98,7 @@ const useFormDisponibilidadeLogic = (ano, professores, cursos) => {
       disponiveis.filter((disciplina) => disciplina.id !== item.id)
     );
     setSelecionadas([...selecionadas, item]);
+    setHasChanges(true); // Alteração detectada
   };
 
   // Move uma disciplina da lista de selecionadas para a lista de disponíveis
@@ -104,23 +107,40 @@ const useFormDisponibilidadeLogic = (ano, professores, cursos) => {
       selecionadas.filter((disciplina) => disciplina.id !== item.id)
     );
     setDisponiveis([...disponiveis, item]);
+    setHasChanges(true); // Alteração detectada
   };
 
-  // Reseta o formulário
-  const handleCancelar = () => {
-    setDisponiveis([]);
-    setSelecionadas([]);
-    setSelectedCurso(null);
+  // Reseta o formulário com confirmação
+  const handleCancelarAlteracoes = () => {
+    const confirmCancel = window.confirm("Tem certeza de que deseja cancelar as alterações?");
+    if (confirmCancel) {
+      setDisponiveis([]);
+      setSelecionadas([]);
+      setSelectedCurso(null);
+      setDisponibilidade({});
+      setAnoInput(ano);
+      setSemestreInput("");
+      setSelectedProfessor(null);
+      setHasChanges(false);
+    }
   };
 
   const handleToggle = (dayId, periodId) => {
-    setDisponibilidade((prevDisponibilidade) => ({
-      ...prevDisponibilidade,
-      [dayId]: {
-        ...prevDisponibilidade[dayId],
-        [periodId]: !prevDisponibilidade[dayId]?.[periodId],
-      },
-    }));
+    setDisponibilidade((prevDisponibilidade) => {
+      const updatedDisponibilidade = {
+        ...prevDisponibilidade,
+        [dayId]: {
+          ...prevDisponibilidade[dayId],
+          [periodId]: !prevDisponibilidade[dayId]?.[periodId],
+        },
+      };
+
+      // Detecta alterações
+      const hasChangesOccurred = JSON.stringify(updatedDisponibilidade) !== JSON.stringify(disponibilidade);
+      setHasChanges(hasChangesOccurred);
+
+      return updatedDisponibilidade;
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -164,10 +184,11 @@ const useFormDisponibilidadeLogic = (ano, professores, cursos) => {
         position: "top-right",
         isClosable: true,
       });
+      setHasChanges(false); // Reset changes state
     } catch (error) {
       toast({
         title: "Erro",
-        description: "Falha ao salvar disponibilidade. 10",
+        description: "Falha ao salvar disponibilidade.",
         status: "error",
         duration: 4000,
         position: "top-right",
@@ -176,7 +197,6 @@ const useFormDisponibilidadeLogic = (ano, professores, cursos) => {
     }
   };
 
-  
   return {
     disponibilidade,
     anoInput,
@@ -191,9 +211,10 @@ const useFormDisponibilidadeLogic = (ano, professores, cursos) => {
     selecionadas,
     moverParaSelecionadas,
     moverParaDisponiveis,
-    handleCancelar,
+    handleCancelarAlteracoes,
     handleToggle,
     handleSubmit,
+    hasChanges,
   };
 };
 
