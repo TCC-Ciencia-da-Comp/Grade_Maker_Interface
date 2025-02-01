@@ -1,6 +1,5 @@
-import Header from '../Header';
+import Header from '../layouts/Header'; 
 import { Center} from '@chakra-ui/react';
-import SideBar from './SideBar';
 
 
 

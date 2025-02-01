@@ -4,8 +4,10 @@ import Disciplina from './pages/Disciplina';
 import Professor from './pages/Professor';
 import Curso from './pages/Curso';
 import Disponibilidade from './pages/Disponibilidade';
+import Turma from './pages/Turma';
+import Configuracao from './pages/Configuracao';
 import Login from './pages/Login';
-import MainLayout from './components/MainLayout';
+import MainLayout from './components/layouts/MainLayout';
 import PrivateRoute from './auth/PrivateRoute'; // Certifique-se do caminho correto
 
 function AppRouter() {
@@ -62,6 +64,26 @@ function AppRouter() {
             <PrivateRoute>
               <MainLayout>
                 <Disponibilidade />
+              </MainLayout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/turma"
+          element={
+            <PrivateRoute>
+              <MainLayout>
+                <Turma />
+              </MainLayout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/configuracao"
+          element={
+            <PrivateRoute>
+              <MainLayout>
+                <Configuracao />
               </MainLayout>
             </PrivateRoute>
           }

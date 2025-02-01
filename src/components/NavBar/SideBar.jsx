@@ -8,8 +8,9 @@ import {
   FaChalkboardTeacher,
   FaUniversity,
   FaCalendarAlt,
+  FaUserGraduate,
 } from "react-icons/fa";
-import { RiLogoutBoxLine, RiMenuUnfold4Fill } from "react-icons/ri";
+import { RiLogoutBoxLine, RiMenuUnfold4Fill, RiSettings2Fill } from "react-icons/ri";
 import {
   IconButton,
   AlertDialog,
@@ -64,6 +65,16 @@ const SideBar = ({ isOpen, toggleSidebar }) => {
           <li>
             <Link to="/disponibilidade" style={styles.sidebarLink}>
               <FaCalendarAlt style={styles.icon} /> Disponibilidade
+            </Link>
+          </li>
+          <li>
+            <Link to="/turma" style={styles.sidebarLink}>
+              <FaUserGraduate style={styles.icon} /> Turma
+            </Link>
+          </li>
+          <li>
+            <Link to="/configuracao" style={styles.sidebarLink}>
+              <RiSettings2Fill style={styles.icon} /> Configuração
             </Link>
           </li>
           <li style={{ ...styles.sidebarLink, ...styles.logoutButton }}>
