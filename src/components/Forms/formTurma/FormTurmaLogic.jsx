@@ -206,7 +206,7 @@ const useFormTurmaLogic = ({ isOpen, onClose, turmaId, initialData, onSuccess, c
         // Atualiza a turma
         const turmaResponse = await updateTurma(turmaId, turmaData);
         console.log(turmaResponse);
-        if (!turmaResponse?.data) {
+        if (!turmaResponse) {
           throw new Error("Erro ao atualizar turma");
         }
 

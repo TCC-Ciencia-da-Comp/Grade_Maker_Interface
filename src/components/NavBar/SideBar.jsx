@@ -53,23 +53,23 @@ const SideBar = ({ isOpen, toggleSidebar }) => {
             </Link>
           </li>
           <li>
-            <Link to="/professor" style={styles.sidebarLink}>
-              <FaChalkboardTeacher style={styles.icon} /> Professores
-            </Link>
-          </li>
-          <li>
             <Link to="/curso" style={styles.sidebarLink}>
               <FaUniversity style={styles.icon} /> Cursos
             </Link>
           </li>
           <li>
-            <Link to="/disponibilidade" style={styles.sidebarLink}>
-              <FaCalendarAlt style={styles.icon} /> Disponibilidade
+            <Link to="/turma" style={styles.sidebarLink}>
+              <FaUserGraduate style={styles.icon} /> Turma
             </Link>
           </li>
           <li>
-            <Link to="/turma" style={styles.sidebarLink}>
-              <FaUserGraduate style={styles.icon} /> Turma
+            <Link to="/professor" style={styles.sidebarLink}>
+              <FaChalkboardTeacher style={styles.icon} /> Professores
+            </Link>
+          </li>
+          <li>
+            <Link to="/disponibilidade" style={styles.sidebarLink}>
+              <FaCalendarAlt style={styles.icon} /> Disponibilidade
             </Link>
           </li>
           <li>
