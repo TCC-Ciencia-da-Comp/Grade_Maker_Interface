@@ -15,7 +15,7 @@ import { getDiaSemana } from "../service/DiaSemanaService";
 import { getTurno } from "../service/TurnoService";
 import { getProfessor } from "../service/ProfessorService";
 import { getCurso } from "../service/CursoService";
-import FormDisponibilidade from "../components/forms/formDisponibilidade/FormDisponibilidade";
+import FormDisponibilidade from "../components/forms/FormDisponibilidade/FormDisponibilidade";
 
 export default function Disponibilidade() {
   const [dias, setDias] = useState([]);

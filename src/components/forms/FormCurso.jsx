@@ -15,7 +15,7 @@ import {
   ModalCloseButton,
   useToast,
 } from '@chakra-ui/react';
-import '../Forms/Form.css';
+import './Form.css';
 
 const FormCurso = ({ isOpen, onClose, curso = null, onCursoAdded }) => {
   const [formData, setFormData] = useState({
