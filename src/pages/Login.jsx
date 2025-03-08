@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
-import AuthService from './../../service/AuthService'; // Ajuste o caminho conforme necessário
+import AuthService from '../service/AuthService'; // Ajuste o caminho conforme necessário
 import { div } from 'framer-motion/client';
-import FormLogin from '../../components/forms/formLogin/FormLogin';
+import FormLogin from '../components/forms/formLogin/FormLogin';
 import { useState } from 'react';
 import { useToast } from '@chakra-ui/react';
 
