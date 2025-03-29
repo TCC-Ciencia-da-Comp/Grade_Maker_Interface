@@ -9,6 +9,7 @@ import {
   FaUniversity,
   FaCalendarAlt,
   FaUserGraduate,
+  FaTable,
 } from "react-icons/fa";
 import { RiLogoutBoxLine, RiMenuUnfold4Fill, RiSettings2Fill } from "react-icons/ri";
 import {
@@ -70,6 +71,11 @@ const SideBar = ({ isOpen, toggleSidebar }) => {
           <li>
             <Link to="/disponibilidade" style={styles.sidebarLink}>
               <FaCalendarAlt style={styles.icon} /> Disponibilidade
+            </Link>
+          </li>
+          <li>
+            <Link to="/gerador-grade" style={styles.sidebarLink}>
+              <FaTable style={styles.icon} /> Gerador de Grade
             </Link>
           </li>
           <li>

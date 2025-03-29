@@ -27,7 +27,7 @@ const useFormTurmaLogic = ({ isOpen, onClose, turmaId, initialData, onSuccess, c
     curso: "",
     turno: "",
     semestre: "",
-    ano: "",
+    ano: "", 
     disciplinas: []
   });
 
@@ -101,16 +101,16 @@ const useFormTurmaLogic = ({ isOpen, onClose, turmaId, initialData, onSuccess, c
     setNome("");
     setCurso("");
     setTurno("");
-    setSemestre("");
-    setAno("");
+    setSemestre(1);
+    setAno(new Date().getFullYear());
     setSelecionadas([]);
     setDisponiveis([]);
     setInitialState({
       nome: "",
       curso: "",
       turno: "",
-      semestre: "",
-      ano: "",
+      semestre: 1,
+      ano: new Date().getFullYear(),
       disciplinas: []
     });
   };

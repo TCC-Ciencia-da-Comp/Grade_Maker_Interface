@@ -105,3 +105,14 @@ export const deleteDisciplinaCursoByDisciplinaId = async (disciplinaId) => {
     throw error;
   }
 };
+
+export const deleteAllDisciplinaCurso = async () => {
+  try {
+    const resposta = await Api.delete("/disciplina-curso");
+    return resposta;
+  } catch (erro) {
+    console.error("Erro ao excluir todas as relações disciplina-curso:", erro);
+    throw erro;
+  }
+};
+

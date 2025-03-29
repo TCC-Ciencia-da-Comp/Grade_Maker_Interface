@@ -6,6 +6,7 @@ import Curso from './pages/Curso';
 import Disponibilidade from './pages/Disponibilidade';
 import Turma from './pages/Turma';
 import Configuracao from './pages/Configuracao';
+import GeradorGrade from './pages/GeradorGrade';
 import Login from './pages/Login';
 import MainLayout from './components/layouts/MainLayout';
 import PrivateRoute from './auth/PrivateRoute'; // Certifique-se do caminho correto
@@ -84,6 +85,16 @@ function AppRouter() {
             <PrivateRoute>
               <MainLayout>
                 <Configuracao />
+              </MainLayout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/gerador-grade"
+          element={
+            <PrivateRoute>
+              <MainLayout>
+                <GeradorGrade />
               </MainLayout>
             </PrivateRoute>
           }
