@@ -113,3 +113,14 @@ export const getProfessorDisciplina = async () => {
     console.error("Erro ao buscar os professores:", erro);
   }
 };
+
+export const deleteAllProfessor = async () => {
+  try {
+    const resposta = await Api.delete("/professor");
+    return resposta.data;
+  } catch (erro) {
+    console.error("Erro ao excluir todos os professores:", erro);
+    throw erro;
+  }
+};
+

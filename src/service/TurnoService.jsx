@@ -10,6 +10,16 @@ export const getTurno = async () => {
   }
 };
 
+export const getTurnoById = async (id) => {
+  try {
+    const resposta = await Api.get(`/turno/${id}`);
+    return resposta;
+  } catch (erro) {
+    console.error("Erro ao buscar o turno:", erro);
+    throw erro;
+  }
+};
+
 export const updateTurno = async (id, objectTurno) => {
   try {
     const resposta = await Api.put(`/turno/${id}/status`, objectTurno);

@@ -28,10 +28,20 @@ export const getCursoOrderByNome = async () => {
   }
 };
 
+export const getCursoById = async (id) => {
+  try {
+    const resposta = await Api.get(`/curso/${id}`);
+    return resposta.data;
+  } catch (erro) {
+    console.error("Erro ao buscar o curso:", erro);
+    throw erro;
+  }
+};
+
 export const getCursoByNome = async (nome) => {
   try {
     const resposta = await Api.get(`/curso/nome/${nome}`);
-    return resposta;
+    return resposta.data;
   } catch (erro) {
     console.error("Erro ao buscar curso pelo nome:", erro);
     throw erro;
@@ -41,7 +51,7 @@ export const getCursoByNome = async (nome) => {
 export const insertCurso = async (objectCurso) => {
   try {
     const resposta = await Api.post("/curso", objectCurso);
-    return resposta;
+    return resposta.data;
   } catch (erro) {
     console.error("Erro ao inserir curso:", erro);
     throw erro;
@@ -51,7 +61,7 @@ export const insertCurso = async (objectCurso) => {
 export const updateCurso = async (id, objectCurso) => {
   try {
     const resposta = await Api.put(`/curso/${id}`, objectCurso);
-    return resposta;
+    return resposta.data;
   } catch (erro) {
     console.error("Erro ao atualizar curso:", erro);
     throw erro;
@@ -61,9 +71,19 @@ export const updateCurso = async (id, objectCurso) => {
 export const deleteCurso = async (id) => {
   try {
     const resposta = await Api.delete(`/curso/${id}`);
-    return resposta;
+    return resposta.data;
   } catch (erro) {
     console.error("Erro ao excluir curso:", erro);
+    throw erro;
+  }
+};
+
+export const deleteAllCurso = async () => {
+  try {
+    const resposta = await Api.delete("/curso");
+    return resposta.data;
+  } catch (erro) {
+    console.error("Erro ao excluir todos os cursos:", erro);
     throw erro;
   }
 };

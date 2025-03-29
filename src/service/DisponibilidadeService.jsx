@@ -53,3 +53,13 @@ export const deleteByIdProfessorAnoSemestre = async (
     throw error;
   }
 };
+
+export const deleteAllDisponibilidade = async () => {
+  try {
+    const resposta = await Api.delete("/disponibilidade");
+    return resposta;
+  } catch (erro) {
+    console.error("Erro ao excluir todas as disponibilidades:", erro);
+    throw erro;
+  }
+};

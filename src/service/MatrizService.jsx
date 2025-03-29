@@ -103,3 +103,13 @@ export const deleteMatrizByDisciplinaId = async (id) => {
     throw erro;
   }
 };
+
+export const deleteAllMatrizByTurmaId = async (id) => {
+  try {
+    const resposta = await Api.delete(`/matriz/turma/${id}`);
+    return resposta;
+  } catch (erro) {
+    console.error("Erro ao excluir todas as matrizes por turma:", erro);
+    throw erro;
+  }
+};

@@ -10,6 +10,17 @@ export const getDiaSemana = async () => {
   }
 };
 
+export const getDiaSemanaById = async (id) => {
+  try {
+    const resposta = await Api.get(`/dia-semana/${id}`);
+    return resposta;
+  } catch (erro) {
+    console.error("Erro ao buscar o dia da semana:", erro);
+    throw erro;
+  }
+};
+
+
 export const updateDiaSemana = async (id, objectDiaSemana) => {
   try {
     const resposta = await Api.put(`/dia-semana/${id}/status`, objectDiaSemana);

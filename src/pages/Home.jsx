@@ -1,25 +1,14 @@
-import { Center, Heading } from '@chakra-ui/react'
-import Api from '../service/Api'
-import { useEffect } from 'react';
-import React from 'react';
+import { Center, Heading, Button } from "@chakra-ui/react";
+import Api from "../service/Api";
+import { useEffect } from "react";
+import React from "react";
+import func from "./dados/func";
+import { div } from "framer-motion/client";
 
-
-function Home(){
-
-  useEffect(() => {
-    const fetchDias = async () => {
-      try {
-            console.log("teste")
-            const resultado = await Api.get('/dia_semana')
-            console.log(resultado)
-          } catch (error) {
-            console.log(error);
-          }
-        };
-        fetchDias();
-      }, []);
-      return (
-        <Center flexDirection="column">
+function Home() {
+  return (
+    <div>
+      <Center flexDirection="column">
         <Heading
           className="page-title"
           as="h2"
@@ -39,8 +28,12 @@ function Home(){
         >
           Home
         </Heading>
-        </Center>
-    )
+      </Center>
+      <Button colorScheme="purple" onClick={() => func()}>
+        Inserir dados
+      </Button>
+    </div>
+  );
 }
 
-export default Home
+export default Home;

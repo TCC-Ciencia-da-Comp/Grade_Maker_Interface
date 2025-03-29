@@ -43,7 +43,7 @@ export const getDisciplinaOrderByNome = async () => {
 export const insertDisciplina = async (objectDisciplina) => {
   try {
     const resposta = await Api.post("/disciplina", objectDisciplina);
-    return resposta;
+    return resposta.data;
   } catch (erro) {
     console.error("Erro ao inserir disciplina:", erro);
     throw erro;
@@ -53,7 +53,7 @@ export const insertDisciplina = async (objectDisciplina) => {
 export const updateDisciplina = async (id, objectDisciplina) => {
   try {
     const resposta = await Api.put(`/disciplina/${id}`, objectDisciplina);
-    return resposta;
+    return resposta.data;
   } catch (erro) {
     console.error("Erro ao atualizar disciplina:", erro);
     throw erro;
@@ -63,7 +63,17 @@ export const updateDisciplina = async (id, objectDisciplina) => {
 export const deleteDisciplina = async (id) => {
   try {
     const resposta = await Api.delete(`/disciplina/${id}`);
-    return resposta;
+    return resposta.data;
+  } catch (erro) {
+    console.error("Erro ao excluir disciplina:", erro);
+    throw erro;
+  }
+};
+
+export const deleteAllDisciplina = async () => {
+  try {
+    const resposta = await Api.delete(`/disciplina`);
+    return resposta.data;
   } catch (erro) {
     console.error("Erro ao excluir disciplina:", erro);
     throw erro;
@@ -73,7 +83,7 @@ export const deleteDisciplina = async (id) => {
 export const getProfessorDisciplina = async (id) => {
   try {
     const resposta = await Api.get(`/professor-disciplina/${id}`);
-    return resposta;
+    return resposta.data;
   } catch (erro) {
     console.error("Erro ao buscar professor disciplina:", erro);
     throw erro;
@@ -83,7 +93,7 @@ export const getProfessorDisciplina = async (id) => {
 export const insertDisciplinaCurso = async (objectDisciplinaCurso) => {
   try {
     const resposta = await Api.post(`/disciplina-curso`, objectDisciplinaCurso);
-    return resposta;
+    return resposta.data;
   } catch (erro) {
     console.error("Erro ao inserir disciplina curso:", erro);
     throw erro;
@@ -93,7 +103,7 @@ export const insertDisciplinaCurso = async (objectDisciplinaCurso) => {
 export const getDisciplinaCursoByDisciplinaId = async (id) => {
   try {
     const resposta = await Api.get(`/disciplina-curso/disciplina/${id}`);
-    return resposta;
+    return resposta.data;
   } catch (erro) {
     console.error("Erro ao buscar disciplina-curso:", erro);
     throw erro;

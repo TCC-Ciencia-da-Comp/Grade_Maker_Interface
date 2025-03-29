@@ -28,6 +28,16 @@ export const getTurmaById = async (id) => {
   }
 };
 
+export const getTurmaByNome = async (nome) => {
+  try {
+    const resposta = await Api.get(`/turma/nome/${nome}`);
+    return resposta.data;
+  } catch (erro) {
+    console.error("Erro ao buscar turma por nome:", erro.message);
+    throw erro;
+  }
+};
+
 export const getTurmaByCursoId = async (id) => {
   try {
     const resposta = await Api.get(`/turma/curso/${id}`);
@@ -41,9 +51,6 @@ export const getTurmaByCursoId = async (id) => {
 export const insertTurma = async (objectTurma) => {
   try {
     const resposta = await Api.post("/turma", objectTurma);
-    if (!resposta?.data?.id) {
-      throw new Error("ID da turma não foi retornado pela API");
-    }
     return resposta.data;
   } catch (erro) {
     console.error("Erro ao inserir turma:", erro);
@@ -90,3 +97,14 @@ export const deleteTurmaByCursoId = async (id) => {
     throw erro;
   }
 };
+
+export const deleteAllTurmaByCursoId = async (id) => {
+  try {
+    const resposta = await Api.delete(`/turma/curso/${id}`);
+    return resposta;
+  } catch (erro) {
+    console.error("Erro ao excluir todas as turmas por curso:", erro);
+    throw erro;
+  }
+};
+
